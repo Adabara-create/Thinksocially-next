@@ -1,26 +1,7391 @@
-@import "tailwindcss";
+/* ============================================================================
+   THINKSOCIALLY — CUSTOM DESIGN SYSTEM
+   ----------------------------------------------------------------------------
+   TABLE OF CONTENTS
+
+   FOUNDATIONS
+     01  Design tokens (dark + light)
+     02  Reset & base
+     03  Layout: container & sections
+     04  Typography
+     05  Labels: eyebrow & section label
+     06  Buttons
+     07  Shared header patterns
+
+   NAVIGATION
+     08  Site header
+     09  Mega menus
+     10  Mobile toggle
+
+   HOMEPAGE SECTIONS
+     11  Hero
+     12  Hero 3D image + floating tags
+     13  Introduction
+     14  Wide image feature card
+     15  Our approach (accordion)
+     16  Capabilities
+     17  Ecosystem
+     18  Technology stack (marquee)
+     19  Why ThinkSocially
+     20  How we work (process)
+     21  Testimonials
+     22  Footer & legacy hooks
+
+   GLOBAL
+     23  Reduced motion
+
+   BREAKPOINTS USED
+     1180 / 1100  tablet-landscape   |   1024  mega menu off
+      900         tablet             |    640  mobile
+   ============================================================================ */
+
+
+/* ============================================================================
+   01. DESIGN TOKENS
+   ============================================================================ */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Layout */
+  --ts-nav-h: 76px;
+  --ts-container: 1280px;
+
+  /* Typography */
+  --ts-font-sans:
+    "Space Grotesk", Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ts-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Backgrounds */
+  --ts-bg: #070b12;
+  --ts-bg-soft: #0a101a;
+  --ts-bg-elevated: #0d1420;
+  --ts-bg-strong: #101a29;
+
+  /* Surfaces */
+  --ts-surface: rgba(255, 255, 255, 0.035);
+  --ts-surface-hover: rgba(255, 255, 255, 0.055);
+  --ts-surface-strong: rgba(255, 255, 255, 0.075);
+  --ts-surface-solid: var(--ts-bg-elevated);
+
+  /* Text */
+  --ts-text: #f5f7fa;
+  --ts-text-soft: #d8dee8;
+  --ts-text-muted: #8e99aa;
+  --ts-text-subtle: #5d6878;
+
+  /* Borders */
+  --ts-border: rgba(255, 255, 255, 0.09);
+  --ts-border-soft: rgba(255, 255, 255, 0.055);
+  --ts-border-strong: rgba(255, 255, 255, 0.17);
+
+  /* Accents */
+  --ts-blue: #3b82f6;
+  --ts-blue-bright: #60a5fa;
+  --ts-blue-dark: #2563eb;
+  --ts-green: #34d399;
+
+  /* Radii */
+  --ts-radius-sm: 10px;
+  --ts-radius-md: 16px;
+  --ts-radius-lg: 24px;
+  --ts-radius-xl: 32px;
+
+  /* Shadows */
+  --ts-shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.28);
+  --ts-shadow-blue: 0 25px 70px rgba(37, 99, 235, 0.16);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html[data-theme="light"] {
+  --ts-bg: #f5f7fa;
+  --ts-bg-soft: #eef2f7;
+  --ts-bg-elevated: #ffffff;
+  --ts-bg-strong: #ffffff;
+
+  --ts-surface: rgba(15, 23, 42, 0.035);
+  --ts-surface-hover: rgba(15, 23, 42, 0.055);
+  --ts-surface-strong: rgba(15, 23, 42, 0.075);
+
+  --ts-text: #101827;
+  --ts-text-soft: #273247;
+  --ts-text-muted: #596579;
+  --ts-text-subtle: #8791a1;
+
+  --ts-border: rgba(15, 23, 42, 0.1);
+  --ts-border-soft: rgba(15, 23, 42, 0.06);
+  --ts-border-strong: rgba(15, 23, 42, 0.18);
+
+  --ts-shadow-lg: 0 30px 80px rgba(15, 23, 42, 0.1);
+  --ts-shadow-blue: 0 25px 70px rgba(37, 99, 235, 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+/* ============================================================================
+   02. RESET & BASE
+   ============================================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  min-width: 320px;
+
+  background:
+    radial-gradient(circle at 80% 8%, rgba(37, 99, 235, 0.055), transparent 30%),
+    var(--ts-bg);
+  color: var(--ts-text);
+
+  font-family: var(--ts-font-sans);
+  line-height: 1.5;
+
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+::selection {
+  background: rgba(59, 130, 246, 0.25);
+  color: var(--ts-text);
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* ============================================================================
+   03. LAYOUT — CONTAINER & SECTIONS
+   ============================================================================ */
+
+.ts-container {
+  width: min(calc(100% - 40px), var(--ts-container));
+  margin-inline: auto;
+}
+
+/* Vertical rhythm shared by every homepage section */
+.ts-section {
+  position: relative;
+}
+
+.ts-section,
+.ts-approach-section,
+.ts-capabilities-section,
+.ts-ecosystem-section,
+.ts-stack-section,
+.ts-why-section,
+.ts-process-section,
+.ts-testimonials-section {
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+@media (max-width: 900px) {
+  .ts-container { width: min(calc(100% - 32px), var(--ts-container)); }
+  .ts-section   { padding-top: 78px; padding-bottom: 78px; }
+}
+
+@media (max-width: 640px) {
+  .ts-container { width: calc(100% - 28px); }
+  .ts-section   { padding-top: 65px; padding-bottom: 65px; }
+}
+
+
+/* ============================================================================
+   04. TYPOGRAPHY
+   ============================================================================ */
+
+.ts-display {
+  max-width: 10.5ch;
+  margin: 1.25rem 0 0;
+
+  font-size: clamp(2.65rem, 5vw, 4.9rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.ts-heading-xl {
+  margin: 0;
+
+  font-size: clamp(2.15rem, 4vw, 3.8rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.ts-heading-lg {
+  margin: 0;
+
+  font-size: clamp(1.85rem, 3.2vw, 3rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+}
+
+/* Muted second line inside a heading */
+.ts-display span,
+.ts-heading-xl span,
+.ts-heading-lg span {
+  display: block;
+  color: var(--ts-text-muted);
+}
+
+.ts-mono-label {
+  display: inline-block;
+
+  font-family: var(--ts-font-mono);
+  font-size: 0.62rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  color: var(--ts-blue-bright);
+}
+
+/* Lead paragraphs that sit beside / under section headings */
+.ts-section-heading p,
+.ts-ecosystem-lead,
+.ts-process-header p,
+.ts-testimonials-header p,
+.ts-stack-header > p {
+  max-width: 570px;
+  margin: 0;
+
+  color: var(--ts-text-muted);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+@media (max-width: 900px) {
+  .ts-display    { max-width: 12ch; font-size: clamp(2.45rem, 9vw, 3.8rem); }
+  .ts-heading-xl { font-size: clamp(2rem, 7vw, 3rem); }
+  .ts-heading-lg { font-size: clamp(1.75rem, 6vw, 2.6rem); }
+}
+
+@media (max-width: 640px) {
+  .ts-display    { font-size: clamp(2.2rem, 12vw, 3.1rem); line-height: 1; }
+  .ts-heading-xl { font-size: clamp(1.9rem, 9vw, 2.55rem); }
+  .ts-heading-lg { font-size: 1.9rem; }
+}
+
+
+/* ============================================================================
+   05. LABELS — EYEBROW & SECTION LABEL
+   ============================================================================ */
+
+.ts-eyebrow,
+.ts-section-label {
+  display: flex;
+  align-items: center;
+
+  font-family: var(--ts-font-mono);
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+
+  color: var(--ts-text-subtle);
+}
+
+.ts-eyebrow {
+  gap: 0.7rem;
+  font-size: 0.66rem;
+}
+
+.ts-eyebrow-line {
+  width: 28px;
+  height: 1px;
+  background: var(--ts-blue);
+}
+
+.ts-section-label {
+  gap: 0.8rem;
+  font-size: 0.65rem;
+}
+
+.ts-section-label span:first-child {
+  color: var(--ts-blue-bright);
+}
+
+
+/* ============================================================================
+   06. BUTTONS
+   ============================================================================ */
+
+.ts-button {
+  min-height: 48px;
+  padding: 0.7rem 1.15rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+
+  border-radius: 999px;
+
+  font-size: 0.88rem;
+  font-weight: 500;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.ts-button:hover {
+  transform: translateY(-2px);
+}
+
+.ts-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ts-button-primary {
+  background: var(--ts-blue);
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.25);
+}
+
+.ts-button-primary:hover {
+  background: var(--ts-blue-dark);
+  box-shadow: 0 18px 40px rgba(37, 99, 235, 0.32);
+}
+
+.ts-button-secondary {
+  border: 1px solid var(--ts-border);
+  background: var(--ts-surface);
+  color: var(--ts-text-soft);
+}
+
+.ts-button-secondary:hover {
+  border-color: var(--ts-border-strong);
+  background: var(--ts-surface-hover);
+}
+
+.ts-inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  margin-top: 1.5rem;
+
+  color: var(--ts-text);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.ts-inline-link svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.2s ease;
+}
+
+.ts-inline-link:hover svg {
+  transform: translate(3px, -3px);
+}
+
+@media (max-width: 640px) {
+  .ts-button { width: 100%; }
+}
+
+
+/* ============================================================================
+   07. SHARED HEADER PATTERNS
+   ----------------------------------------------------------------------------
+   A) "Label + heading" split header   (approach, ecosystem, process, editorial)
+   B) "Heading + lead paragraph" header (capabilities, stack, testimonials)
+   ============================================================================ */
+
+/* A) Label left, heading right */
+.ts-editorial-layout,
+.ts-approach-header,
+.ts-ecosystem-heading,
+.ts-process-header {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.35fr) minmax(0, 1fr);
+  gap: 70px;
+  align-items: start;
+}
+
+.ts-approach-header  { margin-bottom: 52px; }
+.ts-ecosystem-heading { margin-bottom: 3.5rem; }
+.ts-process-header   { margin-bottom: 55px; }
+
+/* B) Heading left, paragraph right (bottom-aligned) */
+.ts-section-heading,
+.ts-stack-header,
+.ts-testimonials-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.55fr);
+  gap: 4rem;
+  align-items: end;
+  margin-bottom: 3.5rem;
+}
+
+.ts-stack-header        { grid-template-columns: minmax(0, 1fr) minmax(300px, 0.55fr); margin-bottom: 4rem; }
+.ts-testimonials-header { grid-template-columns: minmax(0, 1fr) minmax(280px, 0.5fr); }
+
+@media (max-width: 1100px) {
+  .ts-editorial-layout,
+  .ts-approach-header,
+  .ts-ecosystem-heading,
+  .ts-process-header {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .ts-approach-header,
+  .ts-process-header {
+    gap: 24px;
+  }
+
+  .ts-section-heading,
+  .ts-stack-header,
+  .ts-testimonials-header {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+
+/* ============================================================================
+   08. SITE HEADER
+   ============================================================================ */
+
+.ts-site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 1000;
+
+  height: var(--ts-nav-h);
+
+  border-bottom: 1px solid var(--ts-border-soft);
+  background: color-mix(in srgb, var(--ts-bg) 78%, transparent);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.ts-nav-shell {
+  width: min(calc(100% - 40px), 1440px);
+  height: 100%;
+  margin-inline: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Brand ------------------------------------------------------------------- */
+
+.ts-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-shrink: 0;
+
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.ts-brand-mark {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--ts-blue), var(--ts-blue-bright));
+  box-shadow: 0 7px 25px rgba(37, 99, 235, 0.28);
+}
+
+.ts-brand-mark span {
+  width: 3px;
+  height: 12px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.ts-brand-mark span:nth-child(2) {
+  height: 17px;
+}
+
+.ts-brand-name {
+  font-size: 0.98rem;
+}
+
+/* Desktop navigation ------------------------------------------------------ */
+
+.ts-desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-left: auto;
+}
+
+.ts-nav-item {
+  position: static;
+}
+
+.ts-nav-link {
+  min-height: 42px;
+  padding: 0.5rem 0.65rem;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--ts-text-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.ts-nav-link:hover {
+  color: var(--ts-text);
+}
+
+.ts-nav-link svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.25s ease;
+}
+
+.ts-nav-menu-trigger[aria-expanded="true"] {
+  color: var(--ts-text);
+}
+
+.ts-nav-menu-trigger[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+/* Right-hand actions ------------------------------------------------------ */
+
+.ts-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-shrink: 0;
+}
+
+.ts-nav-support {
+  padding: 0.55rem 0.7rem;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  color: var(--ts-text-muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.ts-nav-support-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ts-green);
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.65);
+}
+
+.ts-nav-contact {
+  min-height: 40px;
+  padding: 0.55rem 0.85rem;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 999px;
+  background: var(--ts-surface);
+
+  font-size: 0.74rem;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.ts-nav-contact:hover {
+  transform: translateY(-1px);
+  border-color: var(--ts-border-strong);
+  background: var(--ts-surface-hover);
+}
+
+.ts-nav-contact svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .ts-desktop-nav { display: none; }
+  .ts-nav-actions { margin-left: auto; }
+}
+
+@media (max-width: 900px) {
+  .ts-nav-shell   { width: calc(100% - 32px); }
+  .ts-nav-support { display: none; }
+}
+
+@media (max-width: 640px) {
+  .ts-nav-shell   { width: calc(100% - 28px); }
+  .ts-brand-name  { font-size: 0.9rem; }
+  .ts-nav-contact { display: none; }
+}
+
+
+/* ============================================================================
+   09. MEGA MENUS  (floating, centred panel)
+   ============================================================================ */
+
+.ts-mega-menu {
+  position: fixed;
+  top: calc(var(--ts-nav-h) + 8px);
+  left: 50%;
+  z-index: 990;
+
+  width: min(calc(100vw - 48px), 1180px);
+  max-height: calc(100vh - var(--ts-nav-h) - 24px);
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--ts-bg-elevated) 97%, transparent);
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.34),
+    0 8px 24px rgba(0, 0, 0, 0.14);
+
+  backdrop-filter: blur(24px) saturate(135%);
+  -webkit-backdrop-filter: blur(24px) saturate(135%);
+
+  /* closed */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -8px);
+
+  transition:
+    opacity 0.22s ease,
+    visibility 0.22s ease,
+    transform 0.22s ease;
+}
+
+.ts-mega-menu.ts-menu-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+/* Subtle glowing top edge */
+.ts-mega-menu::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 30px;
+  right: 30px;
+  height: 1px;
+  pointer-events: none;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ts-blue) 35%, transparent),
+    transparent
+  );
+}
+
+/* Scrollbar */
+.ts-mega-menu::-webkit-scrollbar       { width: 5px; }
+.ts-mega-menu::-webkit-scrollbar-track { background: transparent; }
+.ts-mega-menu::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ts-text-muted) 25%, transparent);
+}
+
+.ts-mega-inner {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  min-height: 300px;
+}
+
+/* Left intro panel -------------------------------------------------------- */
+
+.ts-mega-intro {
+  position: relative;
+  padding: 30px 28px;
+
+  display: flex;
+  flex-direction: column;
+
+  border-right: 1px solid var(--ts-border);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--ts-blue) 5%, transparent),
+    transparent 55%
+  );
+}
+
+.ts-mega-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid color-mix(in srgb, var(--ts-blue) 24%, var(--ts-border));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--ts-blue) 8%, transparent);
+  color: var(--ts-blue);
+}
+
+.ts-mega-icon svg {
+  width: 19px;
+  height: 19px;
+  stroke-width: 1.7;
+}
+
+.ts-mega-number {
+  margin-bottom: 9px;
+
+  font-family: var(--ts-font-mono);
+  font-size: 0.61rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+
+  color: color-mix(in srgb, var(--ts-blue) 72%, var(--ts-text-muted));
+}
+
+.ts-mega-intro h3 {
+  margin: 0;
+
+  color: var(--ts-text);
+  font-family: var(--ts-font-sans);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+.ts-mega-intro p {
+  max-width: 205px;
+  margin: 12px 0 0;
+
+  color: var(--ts-text-muted);
+  font-family: var(--ts-font-sans);
+  font-size: 0.75rem;
+  line-height: 1.65;
+}
+
+.ts-mega-main-link {
+  width: fit-content;
+  margin-top: auto;
+  padding-top: 26px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  color: var(--ts-text);
+  font-family: var(--ts-font-sans);
+  font-size: 0.71rem;
+  font-weight: 600;
+
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.ts-mega-main-link svg {
+  width: 14px;
+  height: 14px;
+  color: var(--ts-blue);
+  stroke-width: 2;
+}
+
+.ts-mega-main-link:hover {
+  gap: 10px;
+  color: var(--ts-blue);
+}
+
+/* Service links ----------------------------------------------------------- */
+
+.ts-mega-links {
+  padding: 24px;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
+  gap: 7px;
+}
+
+.ts-mega-item {
+  min-height: 92px;
+  padding: 15px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: inherit;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.ts-mega-item:hover,
+.ts-mega-item:focus-visible {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--ts-blue) 20%, var(--ts-border));
+  background: color-mix(in srgb, var(--ts-surface) 90%, transparent);
+}
+
+/* Service icon */
+.ts-mega-item > span {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid color-mix(in srgb, var(--ts-blue) 17%, var(--ts-border));
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--ts-blue) 6%, transparent);
+  color: color-mix(in srgb, var(--ts-blue) 88%, var(--ts-text));
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.ts-mega-item > span svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.7;
+}
+
+.ts-mega-item:hover > span,
+.ts-mega-item:focus-visible > span {
+  transform: scale(1.04);
+  border-color: color-mix(in srgb, var(--ts-blue) 30%, var(--ts-border));
+  background: color-mix(in srgb, var(--ts-blue) 12%, transparent);
+}
+
+/* Service text */
+.ts-mega-item > div {
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.ts-mega-item strong {
+  display: block;
+
+  color: var(--ts-text);
+  font-family: var(--ts-font-sans);
+  font-size: 0.77rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.ts-mega-item small {
+  display: block;
+  margin-top: 5px;
+
+  color: var(--ts-text-muted);
+  font-family: var(--ts-font-sans);
+  font-size: 0.66rem;
+  line-height: 1.55;
+}
+
+/* Light theme */
+html[data-theme="light"] .ts-mega-menu {
+  box-shadow:
+    0 25px 70px rgba(15, 23, 42, 0.13),
+    0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* Responsive */
+@media (max-width: 1180px) {
+  .ts-mega-menu  { width: calc(100vw - 32px); }
+  .ts-mega-inner { grid-template-columns: 230px minmax(0, 1fr); }
+  .ts-mega-intro { padding: 25px 22px; }
+  .ts-mega-links { padding: 20px; }
+}
+
+@media (max-width: 1024px) {
+  .ts-mega-menu { display: none !important; }
+}
+
+
+/* ============================================================================
+   10. MOBILE TOGGLE
+   ============================================================================ */
+
+.ts-mobile-toggle {
+  display: none;
+
+  width: 42px;
+  height: 42px;
+  margin-left: auto;
+  padding: 0;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 50%;
+  background: var(--ts-surface);
+  cursor: pointer;
+}
+
+.ts-mobile-toggle span {
+  display: block;
+  width: 16px;
+  height: 1px;
+  margin: 4px auto;
+  background: var(--ts-text);
+}
+
+@media (max-width: 1100px) {
+  .ts-mobile-toggle { display: block; }
+}
+
+
+/* ============================================================================
+   11. HERO
+   ============================================================================ */
+
+.ts-hero {
+  position: relative;
+  padding-top: 150px;
+  padding-bottom: 105px;
+
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.ts-hero-atmosphere {
+  position: absolute;
+  top: 100px;
+  right: -220px;
+
+  width: 700px;
+  height: 700px;
+
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.13), transparent 65%);
+  pointer-events: none;
+}
+
+.ts-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(500px, 1.05fr);
+  align-items: center;
+  gap: 70px;
+}
+
+.ts-hero-copy {
+  position: relative;
+  z-index: 2;
+  padding-top: 20px;
+}
+
+.ts-hero-description {
+  max-width: 620px;
+  margin-top: 1.7rem;
+
+  color: var(--ts-text-muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.ts-hero-actions {
+  margin-top: 30px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.ts-hero-meta {
+  margin-top: 30px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+
+  color: var(--ts-text-subtle);
+  font-family: var(--ts-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+}
+
+.ts-hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ts-hero-meta svg {
+  width: 13px;
+  height: 13px;
+  color: var(--ts-green);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .ts-hero-grid { grid-template-columns: 1fr; }
+  .ts-hero-copy { max-width: 850px; }
+}
+
+@media (max-width: 900px) {
+  .ts-hero { padding-top: 125px; padding-bottom: 75px; }
+}
+
+@media (max-width: 640px) {
+  .ts-hero { padding-top: 110px; padding-bottom: 65px; }
+
+  .ts-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ts-hero-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+}
+
+
+/* ============================================================================
+   12. HERO 3D IMAGE  +  FLOATING TICK-BOX TAGS
+   ============================================================================ */
+
+/* Stage ------------------------------------------------------------------- */
+
+.ts-hero-visual {
+  position: relative;
+  min-height: 600px;
+
+  display: grid;
+  place-items: center;
+
+  perspective: 1800px;
+  perspective-origin: 50% 45%;
+}
+
+.ts-hero-visual-glow {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.13), transparent 68%);
+  filter: blur(20px);
+
+  animation: ts-hero-glow 8s ease-in-out infinite;
+}
+
+/* Scene — tilts in 3D (driven by hero-3d.js via --tilt-x / --tilt-y) ------ */
+
+.ts-hero-image-scene {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+
+  position: relative;
+  width: min(100%, 600px);
+
+  transform-style: preserve-3d;
+  transform:
+    rotateX(calc(7deg + var(--tilt-x)))
+    rotateY(calc(-13deg + var(--tilt-y)))
+    rotateZ(0.6deg);
+  transition: transform 0.25s ease-out;
+
+  /* uses the standalone `translate` property so it never fights the tilt */
+  animation: ts-scene-float 7s ease-in-out infinite;
+}
+
+/* Soft ground shadow */
+.ts-hero-image-scene::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -54px;
+  height: 44px;
+
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  filter: blur(28px);
+  transform: translateZ(-80px);
+  pointer-events: none;
+}
+
+/* Image card -------------------------------------------------------------- */
+
+.ts-hero-image-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+  background: var(--ts-bg-elevated);
+  box-shadow:
+    0 50px 110px rgba(0, 0, 0, 0.45),
+    0 24px 70px rgba(37, 99, 235, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  transform: translateZ(0);
+}
+
+.ts-hero-image-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+
+  transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.ts-hero-image-scene:hover .ts-hero-image-card img {
+  transform: scale(1.04);
+}
+
+/* Readability overlay + blue tint */
+.ts-hero-image-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(7, 11, 18, 0.5) 0%,
+      rgba(7, 11, 18, 0) 32%,
+      rgba(7, 11, 18, 0) 62%,
+      rgba(7, 11, 18, 0.72) 100%
+    ),
+    linear-gradient(135deg, rgba(37, 99, 235, 0.16), transparent 55%);
+}
+
+/* Glass sheen that sweeps across */
+.ts-hero-image-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.08) 48%,
+    transparent 60%
+  );
+  background-size: 250% 100%;
+  background-position: 120% 0;
+
+  animation: ts-sheen 9s ease-in-out infinite;
+}
+
+/* Image meta (top row + bottom status) ------------------------------------ */
+
+.ts-hero-image-top {
+  position: absolute;
+  top: 20px;
+  left: 22px;
+  right: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--ts-font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+}
+
+.ts-hero-image-top span:first-child {
+  color: var(--ts-blue-bright);
+}
+
+.ts-hero-image-status {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  padding: 9px 13px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(7, 11, 18, 0.66);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--ts-font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+}
+
+.ts-hero-visual .ts-status-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+
+  border-radius: 50%;
+  background: var(--ts-green);
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.14);
+
+  animation: ts-pulse 2.4s ease-in-out infinite;
+}
+
+/* Corner marker */
+.ts-hero-image-marker {
+  position: absolute;
+  top: -14px;
+  right: 14%;
+  width: 46px;
+  height: 46px;
+
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: 50%;
+  transform: translateZ(50px);
+  pointer-events: none;
+}
+
+.ts-hero-image-marker span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+
+  border-radius: 50%;
+  background: var(--ts-blue-bright);
+  box-shadow: 0 0 16px rgba(96, 165, 250, 0.8);
+
+  animation: ts-pulse 2.4s ease-in-out infinite;
+}
+
+/* Floating tick-box tags -------------------------------------------------- */
+
+.ts-hero-tag {
+  position: absolute;
+  z-index: 3;
+  padding: 10px 16px 10px 10px;
+
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  border: 1px solid var(--ts-border-strong);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--ts-bg-elevated) 84%, transparent);
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.32),
+    0 6px 16px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+
+  white-space: nowrap;
+  animation: ts-tag-float 6s ease-in-out infinite;
+}
+
+.ts-hero-tag-icon {
+  --tag-color: 52, 211, 153;
+
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(var(--tag-color), 0.32);
+  border-radius: 11px;
+  background: rgba(var(--tag-color), 0.12);
+  color: rgb(var(--tag-color));
+}
+
+.ts-hero-tag-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* Tiny tick badge on the corner of every icon box */
+.ts-hero-tag-icon::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+
+  border: 2px solid var(--ts-bg-elevated);
+  border-radius: 50%;
+  background: var(--ts-green);
+}
+
+.ts-hero-tag strong {
+  display: block;
+  color: var(--ts-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.ts-hero-tag small {
+  display: block;
+  margin-top: 3px;
+  color: var(--ts-text-muted);
+  font-size: 0.64rem;
+  line-height: 1.2;
+}
+
+/* Per-tag colour, position & depth */
+.ts-hero-tag-complete    { top: 9%;     left: -7%;  transform: translateZ(90px); }
+.ts-hero-tag-approved    { top: 20%;    right: -8%; transform: translateZ(120px); animation-delay: -1.5s; }
+.ts-hero-tag-cloud       { bottom: 22%; left: -9%;  transform: translateZ(110px); animation-delay: -3s; }
+.ts-hero-tag-operational { bottom: 8%;  right: -6%; transform: translateZ(140px); animation-delay: -4.5s; }
+
+.ts-hero-tag-approved .ts-hero-tag-icon { --tag-color: 96, 165, 250; }
+.ts-hero-tag-cloud .ts-hero-tag-icon    { --tag-color: 56, 189, 248; }
+
+/* Light theme */
+html[data-theme="light"] .ts-hero-tag {
+  box-shadow:
+    0 22px 50px rgba(15, 23, 42, 0.16),
+    0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="light"] .ts-hero-image-card {
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow:
+    0 50px 110px rgba(15, 23, 42, 0.22),
+    0 24px 70px rgba(37, 99, 235, 0.12);
+}
+
+html[data-theme="light"] .ts-hero-image-scene::after {
+  background: rgba(15, 23, 42, 0.28);
+}
+
+/* Animations */
+@keyframes ts-scene-float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -14px; }
+}
+
+@keyframes ts-tag-float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -9px; }
+}
+
+@keyframes ts-sheen {
+  0%, 55% { background-position: 120% 0; }
+  100%    { background-position: -60% 0; }
+}
+
+@keyframes ts-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+
+@keyframes ts-hero-glow {
+  0%, 100% { transform: scale(0.95); opacity: 0.65; }
+  50%      { transform: scale(1.08); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .ts-hero-visual { min-height: 480px; margin-top: 1rem; }
+  .ts-hero-image-scene { width: min(100%, 560px); }
+
+  .ts-hero-tag-complete,
+  .ts-hero-tag-cloud       { left: -2%; }
+  .ts-hero-tag-approved,
+  .ts-hero-tag-operational { right: -2%; }
+}
+
+@media (max-width: 640px) {
+  .ts-hero-visual { min-height: 380px; }
+
+  .ts-hero-image-scene {
+    transform:
+      rotateX(calc(4deg + var(--tilt-x)))
+      rotateY(calc(-7deg + var(--tilt-y)));
+  }
+
+  .ts-hero-image-card   { border-radius: 20px; }
+  .ts-hero-image-marker { display: none; }
+
+  .ts-hero-image-top {
+    top: 14px;
+    left: 16px;
+    right: 16px;
+    font-size: 0.5rem;
+  }
+
+  .ts-hero-image-status {
+    left: 14px;
+    bottom: 14px;
+    padding: 7px 10px;
+    font-size: 0.52rem;
+  }
+
+  .ts-hero-tag {
+    gap: 8px;
+    padding: 7px 11px 7px 7px;
+    border-radius: 13px;
+  }
+
+  .ts-hero-tag-icon {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+    border-radius: 9px;
+  }
+
+  .ts-hero-tag-icon svg { width: 15px; height: 15px; }
+  .ts-hero-tag strong   { font-size: 0.68rem; }
+  .ts-hero-tag small    { font-size: 0.56rem; }
+
+  .ts-hero-tag-complete    { top: 4%;     left: 0; }
+  .ts-hero-tag-approved    { top: 16%;    right: 0; }
+  .ts-hero-tag-cloud       { bottom: 20%; left: 0; }
+  .ts-hero-tag-operational { bottom: 5%;  right: 0; }
+}
+
+
+/* ============================================================================
+   13. INTRODUCTION
+   ============================================================================ */
+
+.ts-introduction {
+  padding-top: 95px;
+  padding-bottom: 105px;
+  border-top: 1px solid var(--ts-border-soft);
+}
+
+/* Two-column layout: copy + image */
+.ts-introduction-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+  gap: clamp(3rem, 7vw, 7rem);
+  align-items: center;
+}
+
+.ts-introduction-copy {
+  min-width: 0;
+}
+
+.ts-introduction-copy .ts-section-label {
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+/* Editorial text --------------------------------------------------------- */
+
+.ts-editorial-layout {
+  gap: 4rem;
+}
+
+.ts-editorial-main {
+  max-width: 900px;
+}
+
+.ts-editorial-main > .ts-heading-xl {
+  max-width: 850px;
+}
+
+.ts-introduction-copy .ts-editorial-main {
+  max-width: 760px;
+}
+
+.ts-editorial-columns {
+  margin-top: 2rem;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 45px;
+}
+
+.ts-introduction-copy .ts-editorial-columns {
+  max-width: 700px;
+  margin-top: clamp(2rem, 3vw, 3rem);
+}
+
+.ts-editorial-columns p {
+  margin: 0;
+  color: var(--ts-text-muted);
+  font-size: 0.94rem;
+  line-height: 1.8;
+}
+
+/* Image ------------------------------------------------------------------ */
+
+.ts-introduction-visual {
+  position: relative;
+  min-width: 0;
+}
+
+.ts-introduction-image {
+  position: relative;
+  min-height: 520px;
+  overflow: hidden;
+  isolation: isolate;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 24px;
+  background: var(--ts-surface);
+}
+
+.ts-introduction-image img {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ts-introduction-image:hover img {
+  transform: scale(1.025);
+}
+
+.ts-introduction-image-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background: linear-gradient(
+    180deg,
+    rgba(7, 11, 18, 0.04) 0%,
+    rgba(7, 11, 18, 0.08) 45%,
+    rgba(7, 11, 18, 0.72) 100%
+  );
+}
+
+.ts-introduction-image-label {
+  position: absolute;
+  z-index: 2;
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  padding: 0.75rem 0.9rem;
+
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(7, 11, 18, 0.58);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--ts-font-mono);
+  font-size: 0.62rem;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .ts-introduction-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .ts-introduction-copy .ts-editorial-main { max-width: 820px; }
+
+  .ts-introduction-visual {
+    width: 100%;
+    max-width: 720px;
+    margin-left: auto;
+  }
+
+  .ts-introduction-image,
+  .ts-introduction-image img { min-height: 440px; }
+}
+
+@media (max-width: 640px) {
+  .ts-introduction-layout { gap: 2.25rem; }
+  .ts-introduction-copy .ts-section-label { margin-bottom: 2rem; }
+  .ts-editorial-columns { grid-template-columns: 1fr; gap: 1rem; }
+
+  .ts-introduction-image { border-radius: 18px; }
+  .ts-introduction-image,
+  .ts-introduction-image img { min-height: 360px; }
+
+  .ts-introduction-image-label {
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.85rem;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.56rem;
+  }
+}
+
+
+/* ============================================================================
+   14. WIDE IMAGE FEATURE CARD
+   ============================================================================ */
+
+.ts-image-feature {
+  padding-top: clamp(4rem, 7vw, 7rem);
+  padding-bottom: clamp(5rem, 8vw, 8rem);
+}
+
+.ts-wide-image-card {
+  position: relative;
+  min-height: 500px;
+  overflow: hidden;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.75fr);
+
+  border: 1px solid var(--ts-border);
+  border-radius: 28px;
+  background: var(--ts-surface-solid);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.16);
+}
+
+/* Image side */
+.ts-wide-image-media {
+  position: relative;
+  min-height: 500px;
+  overflow: hidden;
+
+  background:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.12), transparent 50%),
+    var(--ts-bg-elevated);
+}
+
+.ts-wide-image-media img {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  display: block;
+  object-fit: cover;
+
+  transition: transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.ts-wide-image-card:hover .ts-wide-image-media img {
+  transform: scale(1.025);
+}
+
+.ts-wide-image-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background: linear-gradient(
+    90deg,
+    rgba(7, 11, 18, 0.02) 0%,
+    rgba(7, 11, 18, 0.04) 45%,
+    rgba(7, 11, 18, 0.72) 100%
+  );
+}
+
+.ts-wide-image-label {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  padding: 9px 13px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(7, 11, 18, 0.68);
+  backdrop-filter: blur(14px);
+
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--ts-font-mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ts-status-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+
+  border-radius: 50%;
+  background: var(--ts-blue-bright);
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.1);
+}
+
+/* Content side */
+.ts-wide-image-content {
+  padding: clamp(32px, 5vw, 64px);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  border-left: 1px solid var(--ts-border);
+}
+
+.ts-wide-image-content h2 {
+  max-width: 500px;
+  margin: 22px 0 0;
+
+  color: var(--ts-text);
+  font-size: clamp(2rem, 3.4vw, 3.35rem);
+  font-weight: 600;
+  line-height: 1.07;
+  letter-spacing: -0.045em;
+}
+
+.ts-wide-image-content h2 span {
+  display: block;
+  color: var(--ts-text-muted);
+}
+
+.ts-wide-image-content p {
+  max-width: 430px;
+  margin: 22px 0 30px;
+
+  color: var(--ts-text-muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .ts-wide-image-card { grid-template-columns: 1fr; }
+
+  .ts-wide-image-media,
+  .ts-wide-image-media img { min-height: 400px; }
+
+  .ts-wide-image-content {
+    border-left: 0;
+    border-top: 1px solid var(--ts-border);
+  }
+}
+
+@media (max-width: 640px) {
+  .ts-wide-image-card { border-radius: 22px; }
+
+  .ts-wide-image-media,
+  .ts-wide-image-media img { min-height: 300px; }
+
+  .ts-wide-image-label {
+    left: 16px;
+    bottom: 16px;
+    max-width: calc(100% - 32px);
+  }
+
+  .ts-wide-image-content { padding: 30px 24px 34px; }
+  .ts-wide-image-content h2 { font-size: 2rem; }
+}
+
+
+/* ============================================================================
+   15. OUR APPROACH  (accordion)
+   ============================================================================ */
+
+.ts-approach-heading {
+  max-width: 820px;
+}
+
+.ts-approach-heading p {
+  max-width: 650px;
+  margin-top: 22px;
+
+  color: var(--ts-text-muted);
+  font-size: 0.98rem;
+  line-height: 1.8;
+}
+
+.ts-approach-accordion {
+  width: 100%;
+  border-top: 1px solid var(--ts-border);
+}
+
+.ts-approach-item {
+  border-bottom: 1px solid var(--ts-border);
+  transition: background-color 260ms ease, border-color 260ms ease;
+}
+
+.ts-approach-item.is-active {
+  background: var(--ts-surface);
+}
+
+/* Trigger row ------------------------------------------------------------- */
+
+.ts-approach-trigger {
+  width: 100%;
+  min-height: 92px;
+  padding: 20px 18px;
+
+  display: grid;
+  grid-template-columns: 70px minmax(190px, 0.65fr) minmax(150px, 1fr) 48px;
+  align-items: center;
+  gap: 24px;
+
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  transition: background-color 220ms ease, padding 220ms ease;
+}
+
+.ts-approach-trigger:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.ts-approach-trigger:focus-visible {
+  outline: 2px solid var(--ts-blue);
+  outline-offset: -2px;
+}
+
+.ts-approach-number {
+  color: var(--ts-text-muted);
+  font-family: var(--ts-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.ts-approach-title {
+  color: var(--ts-text);
+  font-size: 1.18rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.ts-approach-summary {
+  color: var(--ts-text-muted);
+  font-size: 0.88rem;
+}
+
+.ts-approach-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 50%;
+  color: var(--ts-text-muted);
+
+  transition:
+    transform 300ms ease,
+    color 300ms ease,
+    background-color 300ms ease,
+    border-color 300ms ease;
+}
+
+.ts-approach-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.ts-approach-item.is-active .ts-approach-icon {
+  transform: rotate(180deg);
+  border-color: var(--ts-border-strong);
+  background: var(--ts-surface-strong);
+  color: var(--ts-text);
+}
+
+/* Expandable panel (grid-rows trick for smooth height animation) ---------- */
+
+.ts-approach-panel {
+  display: grid;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  opacity: 1;
+
+  transition: grid-template-rows 350ms ease, opacity 250ms ease;
+}
+
+.ts-approach-panel[hidden] {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+.ts-approach-panel-inner {
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 18px 34px 112px;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 70px;
+}
+
+.ts-approach-detail {
+  max-width: 690px;
+}
+
+.ts-approach-detail h3 {
+  margin: 10px 0 14px;
+
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.ts-approach-detail p {
+  max-width: 650px;
+  margin: 0;
+
+  color: var(--ts-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+/* Side metrics */
+.ts-approach-metric {
+  padding-left: 26px;
+  align-self: center;
+
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  border-left: 1px solid var(--ts-border);
+
+  color: var(--ts-text-muted);
+  font-family: var(--ts-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ts-approach-metric-line {
+  width: 28px;
+  height: 1px;
+  margin-bottom: 7px;
+  background: var(--ts-blue);
+}
+
+/* Light theme */
+html[data-theme="light"] .ts-approach-trigger:hover { background: rgba(15, 23, 42, 0.025); }
+html[data-theme="light"] .ts-approach-icon          { background: rgba(15, 23, 42, 0.025); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .ts-approach-trigger {
+    grid-template-columns: 48px minmax(0, 1fr) 40px;
+    gap: 15px;
+  }
+
+  .ts-approach-summary { display: none; }
+
+  .ts-approach-panel-inner {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 0 18px 30px 81px;
+  }
+
+  .ts-approach-metric {
+    padding: 1rem 0 0 18px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-left: 0;
+    border-top: 1px solid var(--ts-border);
+  }
+
+  .ts-approach-metric-line { display: none; }
+}
+
+@media (max-width: 640px) {
+  .ts-approach-trigger {
+    min-height: 78px;
+    padding: 16px 10px;
+    grid-template-columns: 38px minmax(0, 1fr) 36px;
+  }
+
+  .ts-approach-number { font-size: 0.65rem; }
+  .ts-approach-title  { font-size: 1rem; }
+  .ts-approach-icon   { width: 34px; height: 34px; }
+
+  .ts-approach-panel-inner { padding: 0 10px 25px 48px; }
+}
+
+
+/* ============================================================================
+   16. CAPABILITIES
+   ============================================================================ */
+
+.ts-capability-panel {
+  min-height: 560px;
+  overflow: hidden;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+
+  border: 1px solid var(--ts-border);
+  border-radius: var(--ts-radius-xl);
+  background: var(--ts-surface);
+  box-shadow: var(--ts-shadow-lg);
+}
+
+/* Visual side ------------------------------------------------------------- */
+
+.ts-capability-visual {
+  position: relative;
+  min-height: 590px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #0a111d;
+}
+
+.ts-capability-image {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+
+  opacity: 0;
+  visibility: hidden;
+  background: var(--ts-bg-elevated);
+
+  transition: opacity 0.55s ease, visibility 0.55s ease;
+}
+
+.ts-capability-image.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Fallback tinted gradients (sit behind the photo), one hue per service */
+.ts-capability-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.2), transparent 35%),
+    linear-gradient(145deg, rgba(8, 17, 30, 0.3), rgba(4, 8, 15, 0.95));
+}
+
+.ts-capability-image:nth-child(2)::before {
+  background:
+    radial-gradient(circle at 70% 30%, rgba(56, 189, 248, 0.18), transparent 35%),
+    linear-gradient(145deg, rgba(5, 21, 34, 0.3), rgba(4, 8, 15, 0.95));
+}
+
+.ts-capability-image:nth-child(3)::before {
+  background:
+    radial-gradient(circle at 40% 40%, rgba(168, 85, 247, 0.13), transparent 35%),
+    linear-gradient(145deg, rgba(20, 10, 32, 0.3), rgba(4, 8, 15, 0.95));
+}
+
+.ts-capability-image:nth-child(4)::before {
+  background:
+    radial-gradient(circle at 70% 40%, rgba(34, 197, 94, 0.12), transparent 35%),
+    linear-gradient(145deg, rgba(5, 24, 19, 0.3), rgba(4, 8, 15, 0.95));
+}
+
+/* Photo */
+.ts-capability-image > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+
+  transform: scale(1.01);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ts-capability-image.is-active > img {
+  transform: scale(1.035);
+}
+
+/* Dark gradient over photo */
+.ts-capability-image-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background: linear-gradient(
+    180deg,
+    rgba(4, 8, 15, 0.08) 0%,
+    rgba(4, 8, 15, 0.16) 38%,
+    rgba(4, 8, 15, 0.78) 100%
+  );
+}
+
+/* Technical grid stays on top of the photo */
+.ts-capability-visual-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 55px 55px;
+}
+
+.ts-capability-image .ts-capability-visual-grid {
+  z-index: 2;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+/* Caption block: label + icon / title / description */
+.ts-capability-visual-content {
+  position: absolute;
+  right: 32px;
+  bottom: 32px;
+  left: 32px;
+  z-index: 3;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label icon"
+    "title title"
+    "description description";
+  align-items: end;
+  gap: 10px 18px;
+}
+
+.ts-capability-visual-content > span {
+  grid-area: label;
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.68);
+  font-family: var(--ts-font-mono);
+  font-size: 0.58rem;
+  line-height: 1;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.ts-capability-visual-content > i {
+  grid-area: icon;
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+}
+
+.ts-capability-visual-content > svg {
+  width: 40px;
+  height: 40px;
+  margin: 1.5rem 0;
+  color: var(--ts-blue-bright);
+}
+
+.ts-capability-visual-content > strong {
+  grid-area: title;
+
+  color: #fff;
+  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.ts-capability-visual-content > small {
+  grid-area: description;
+  max-width: 330px;
+  margin-top: 0.5rem;
+
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+/* Content side ------------------------------------------------------------ */
+
+.ts-capability-content {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.ts-capability-tabs {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--ts-border);
+}
+
+.ts-capability-tab {
+  padding: 1rem 0;
+
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+  gap: 0.5rem;
+
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+
+  color: var(--ts-text-muted);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.ts-capability-tab:hover {
+  color: var(--ts-text);
+}
+
+.ts-capability-tab span {
+  color: var(--ts-text-subtle);
+  font-family: var(--ts-font-mono);
+  font-size: 0.62rem;
+}
+
+.ts-capability-tab.is-active {
+  border-color: var(--ts-blue);
+  color: var(--ts-text);
+}
+
+.ts-capability-tab.is-active span {
+  color: var(--ts-blue-bright);
+}
+
+.ts-capability-copy {
+  display: none;
+  margin-top: auto;
+  padding-top: 3rem;
+}
+
+.ts-capability-copy.is-active {
+  display: block;
+}
+
+.ts-capability-kicker {
+  color: var(--ts-blue-bright);
+  font-family: var(--ts-font-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ts-capability-copy h3 {
+  margin: 0.8rem 0 1rem;
+
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+.ts-capability-copy p {
+  color: var(--ts-text-muted);
+  line-height: 1.8;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .ts-capability-panel   { grid-template-columns: 1fr; }
+  .ts-capability-content { min-height: 500px; }
+}
+
+@media (max-width: 900px) {
+  .ts-capability-visual { min-height: 440px; }
+
+  .ts-capability-visual-content {
+    right: 24px;
+    bottom: 24px;
+    left: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ts-capability-visual  { min-height: 380px; }
+  .ts-capability-content { padding: 1.5rem; }
+  .ts-capability-copy    { padding-top: 2rem; }
+
+  .ts-capability-visual-content {
+    right: 20px;
+    bottom: 20px;
+    left: 20px;
+    gap: 8px 12px;
+  }
+
+  .ts-capability-visual-content > i {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+
+  .ts-capability-visual-content > strong { font-size: 1.3rem; }
+  .ts-capability-visual-content > small  { font-size: 0.72rem; }
+}
+
+
+/* ============================================================================
+   17. ECOSYSTEM
+   ============================================================================ */
+
+.ts-ecosystem-heading {
+  gap: 4rem;
+}
+
+.ts-ecosystem-lead {
+  max-width: 650px;
+  margin-top: 1.5rem;
+}
+
+.ts-ecosystem-shell {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.7fr) minmax(0, 1.3fr);
+  gap: 1rem;
+}
+
+.ts-ecosystem-intro {
+  min-height: 430px;
+  padding: 2.5rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  border: 1px solid var(--ts-border);
+  border-radius: var(--ts-radius-xl);
+  background: var(--ts-surface);
+}
+
+.ts-ecosystem-intro h3 {
+  max-width: 420px;
+  margin: 1.3rem 0 1rem;
+
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.ts-ecosystem-intro p {
+  max-width: 430px;
+  color: var(--ts-text-muted);
+  line-height: 1.8;
+}
+
+.ts-ecosystem-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.ts-ecosystem-card {
+  min-height: 205px;
+  padding: 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid var(--ts-border);
+  border-radius: var(--ts-radius-lg);
+  background: var(--ts-surface);
+
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.ts-ecosystem-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--ts-border-strong);
+  background: var(--ts-surface-hover);
+}
+
+.ts-ecosystem-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ts-ecosystem-card-top span {
+  color: var(--ts-text-subtle);
+  font-family: var(--ts-font-mono);
+  font-size: 0.63rem;
+}
+
+.ts-ecosystem-card-top svg {
+  width: 18px;
+  height: 18px;
+  color: var(--ts-blue-bright);
+}
+
+.ts-ecosystem-card h3 {
+  margin-top: 2rem;
+  font-size: 1.15rem;
+  letter-spacing: -0.03em;
+}
+
+.ts-ecosystem-card p {
+  margin-top: 0.5rem;
+  color: var(--ts-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.ts-card-link {
+  margin-top: auto;
+  padding-top: 1rem;
+
+  color: var(--ts-text-subtle);
+  font-family: var(--ts-font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ts-ecosystem-bottom {
+  margin-top: 1.5rem;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.ts-ecosystem-bottom > div {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+
+  color: var(--ts-text-subtle);
+  font-family: var(--ts-font-mono);
+  font-size: 0.57rem;
+  letter-spacing: 0.08em;
+}
+
+.ts-connector {
+  flex: 1;
+  height: 1px;
+  background: var(--ts-border);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .ts-ecosystem-shell { grid-template-columns: 1fr; }
+  .ts-ecosystem-intro { min-height: 320px; }
+}
+
+@media (max-width: 640px) {
+  .ts-ecosystem-cards  { grid-template-columns: 1fr; }
+  .ts-ecosystem-bottom { grid-template-columns: 1fr; gap: 0.75rem; }
+}
+
+
+/* ============================================================================
+   18. TECHNOLOGY STACK  (marquee)
+   ============================================================================ */
+
+.ts-stack-section {
+  overflow: hidden;
+}
+
+/* Full-bleed marquee */
+.ts-tech-marquee {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding: 0.5rem 0;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Edge fades */
+.ts-tech-marquee::before,
+.ts-tech-marquee::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 12vw;
+  pointer-events: none;
+}
+
+.ts-tech-marquee::before { left: 0;  background: linear-gradient(90deg,  var(--ts-bg), transparent); }
+.ts-tech-marquee::after  { right: 0; background: linear-gradient(270deg, var(--ts-bg), transparent); }
+
+.ts-tech-track {
+  width: max-content;
+  flex-shrink: 0;
+  display: flex;
+}
+
+.ts-tech-list {
+  padding-right: 0.85rem;
+  flex-shrink: 0;
+
+  display: flex;
+  gap: 0.85rem;
+}
+
+.ts-tech-track-one { animation: ts-tech-forward 46s linear infinite; }
+.ts-tech-track-two { animation: ts-tech-reverse 52s linear infinite; }
+
+.ts-tech-marquee:hover .ts-tech-track {
+  animation-play-state: paused;
+}
+
+.ts-tech-card {
+  width: 205px;
+  min-width: 205px;
+  height: 94px;
+  padding: 1rem 1.1rem;
+
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 18px;
+  background: var(--ts-surface);
+
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+
+.ts-tech-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--ts-border-strong);
+  background: var(--ts-surface-strong);
+}
+
+.ts-tech-card img {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.ts-tech-card div {
+  min-width: 0;
+}
+
+.ts-tech-card strong {
+  display: block;
+  overflow: hidden;
+
+  font-size: 0.83rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ts-tech-card span {
+  display: block;
+  margin-top: 3px;
+
+  color: var(--ts-text-subtle);
+  font-family: var(--ts-font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ts-stack-footer {
+  margin-top: 2.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  color: var(--ts-text-subtle);
+  font-family: var(--ts-font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ts-stack-footer-line {
+  width: 36px;
+  height: 1px;
+  background: var(--ts-border);
+}
+
+/* Light theme */
+html[data-theme="light"] .ts-tech-card {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+@keyframes ts-tech-forward {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes ts-tech-reverse {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .ts-tech-card {
+    width: 175px;
+    min-width: 175px;
+    height: 84px;
+  }
+
+  .ts-stack-footer {
+    flex-wrap: wrap;
+    line-height: 1.7;
+    text-align: center;
+  }
+}
+
+
+/* ============================================================================
+   19. WHY THINKSOCIALLY
+   ============================================================================ */
+
+.ts-why-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 5rem;
+}
+
+.ts-why-intro {
+  position: sticky;
+  top: calc(var(--ts-nav-h) + 2rem);
+  align-self: start;
+}
+
+.ts-why-list {
+  border-top: 1px solid var(--ts-border);
+}
+
+.ts-why-item {
+  padding: 26px 0;
+
+  display: grid;
+  grid-template-columns: 55px 1fr;
+  gap: 1rem;
+
+  border-bottom: 1px solid var(--ts-border);
+}
+
+.ts-why-item > span {
+  color: var(--ts-blue-bright);
+  font-family: var(--ts-font-mono);
+  font-size: 0.65rem;
+}
+
+.ts-why-item h3 {
+  margin: 0;
+  font-size: 1.08rem;
+  letter-spacing: -0.025em;
+}
+
+.ts-why-item p {
+  max-width: 650px;
+  margin-top: 0.6rem;
+
+  color: var(--ts-text-muted);
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .ts-why-layout { grid-template-columns: 1fr; }
+  .ts-why-intro  { position: static; }
+}
+
+
+/* ============================================================================
+   20. HOW WE WORK  (process)
+   ============================================================================ */
+
+.ts-process-header > div:last-child {
+  max-width: 850px;
+}
+
+.ts-process-header p {
+  margin-top: 1.5rem;
+}
+
+/* Legacy decorative line — hidden */
+.ts-process-line {
+  display: none !important;
+}
+
+/* Connected 4-up grid: 1px gaps reveal the border colour as dividers */
+.ts-process-system {
+  margin-top: clamp(3rem, 5vw, 5rem);
+  overflow: hidden;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 22px;
+  background: var(--ts-border);
+}
+
+.ts-process-stage {
+  position: relative;
+  min-height: 410px;
+  padding: 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--ts-surface);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.ts-process-stage:hover {
+  background: linear-gradient(145deg, var(--ts-surface), rgba(37, 99, 235, 0.035));
+}
+
+/* Top row */
+.ts-process-stage-top {
+  min-height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ts-process-index {
+  color: var(--ts-text-muted);
+  font-family: var(--ts-font-mono);
+  font-size: 0.68rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.ts-process-status {
+  color: var(--ts-blue-bright);
+  font-family: var(--ts-font-mono);
+  font-size: 0.58rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+}
+
+/* Icon */
+.ts-process-icon {
+  width: 54px;
+  height: 54px;
+  margin-top: 3.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 15px;
+  background: linear-gradient(145deg, rgba(37, 99, 235, 0.1), transparent);
+  color: var(--ts-blue-bright);
+
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    background 0.35s ease;
+}
+
+.ts-process-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.ts-process-stage:hover .ts-process-icon {
+  transform: translateY(-3px);
+  border-color: rgba(37, 99, 235, 0.35);
+  background: rgba(37, 99, 235, 0.09);
+}
+
+/* Copy */
+.ts-process-content {
+  margin-top: 2rem;
+}
+
+.ts-process-stage h3 {
+  margin: 0;
+
+  font-size: clamp(1.45rem, 2vw, 1.8rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.ts-process-stage p {
+  max-width: 280px;
+  margin: 1rem 0 0;
+
+  color: var(--ts-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* Footer row */
+.ts-process-footer {
+  margin-top: auto;
+  padding-top: 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-top: 1px solid var(--ts-border);
+
+  color: var(--ts-text-muted);
+  font-family: var(--ts-font-mono);
+  font-size: 0.55rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+}
+
+.ts-process-arrow {
+  width: 26px;
+  height: 26px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 50%;
+
+  color: var(--ts-text);
+  font-family: var(--ts-font-sans);
+  font-size: 0.8rem;
+}
+
+.ts-process-stage:hover .ts-process-arrow {
+  border-color: rgba(37, 99, 235, 0.35);
+  color: var(--ts-blue-bright);
+}
+
+/* Light theme */
+html[data-theme="light"] .ts-process-stage {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .ts-process-system { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ts-process-stage  { min-height: 380px; }
+}
+
+@media (max-width: 640px) {
+  .ts-process-system { grid-template-columns: 1fr; border-radius: 18px; }
+  .ts-process-stage  { min-height: 350px; padding: 1.35rem; }
+  .ts-process-icon   { margin-top: 2.75rem; }
+}
+
+
+/* ============================================================================
+   21. TESTIMONIALS
+   ============================================================================ */
+
+.ts-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.ts-testimonial-card {
+  min-height: 340px;
+  padding: 2rem;
+
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid var(--ts-border);
+  border-radius: var(--ts-radius-lg);
+  background: var(--ts-surface);
+
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.ts-testimonial-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--ts-border-strong);
+}
+
+.ts-quote-mark {
+  color: var(--ts-blue);
+  font-size: 3rem;
+  line-height: 0.8;
+}
+
+.ts-testimonial-card blockquote {
+  max-width: 650px;
+  margin: 2rem 0;
+
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.ts-testimonial-person {
+  margin-top: auto;
+  padding-top: 1.5rem;
+
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+
+  border-top: 1px solid var(--ts-border);
+}
+
+.ts-person-avatar {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(59, 130, 246, 0.16);
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.1);
+
+  color: var(--ts-blue-bright);
+  font-family: var(--ts-font-mono);
+  font-size: 0.62rem;
+}
+
+.ts-testimonial-person strong {
+  display: block;
+  font-size: 0.78rem;
+}
+
+.ts-testimonial-person span {
+  display: block;
+  margin-top: 2px;
+  color: var(--ts-text-muted);
+  font-size: 0.65rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .ts-testimonials-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .ts-testimonial-card { min-height: 300px; padding: 1.5rem; }
+}
+
+
+/* ============================================================================
+   22. FOOTER & LEGACY HOOKS
+   ============================================================================ */
+
+#site-footer {
+  position: relative;
+}
+
+/* Old closing image card has been replaced — keep any leftover markup hidden */
+.ts-closing-section {
+  display: none !important;
+}
+
+
+/* ============================================================================
+   23. REDUCED MOTION
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Neutralise every animation & transition */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Fully stop the looping / decorative motion */
+  .ts-tech-track,
+  .ts-hero-visual-glow,
+  .ts-hero-image-scene,
+  .ts-hero-tag,
+  .ts-hero-image-card::after,
+  .ts-hero-visual .ts-status-dot,
+  .ts-hero-image-marker span {
+    animation: none !important;
+  }
+
+  /* No hover / active zoom or lift */
+  .ts-introduction-image:hover img,
+  .ts-process-stage:hover .ts-process-icon,
+  .ts-capability-image.is-active > img {
+    transform: none;
+  }
+
+  /* Let the paused marquee be scrolled manually */
+  .ts-tech-marquee {
+    overflow-x: auto;
+  }
+}
+
+/* ============================================================
+   THINKSOCIALLY — FOOTER
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   01. Footer Shell
+   ------------------------------------------------------------ */
+
+#site-footer {
+  position: relative;
+  width: 100%;
+  margin-top: 0;
+  background: var(--ts-surface, #0b0f1a);
+  color: var(--ts-text, #ffffff);
+  overflow: hidden;
+  border-top: 1px solid var(--ts-border, rgba(255, 255, 255, 0.08));
+}
+
+
+/* ------------------------------------------------------------
+   02. Main Footer
+   ------------------------------------------------------------ */
+
+.ts-footer-main {
+  position: relative;
+  width: 100%;
+  padding: 88px 0 42px;
+  background:
+    radial-gradient(
+      circle at 12% 20%,
+      rgba(37, 99, 235, 0.08),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 88% 70%,
+      rgba(59, 130, 246, 0.05),
+      transparent 28%
+    ),
+    var(--ts-surface, #0b0f1a);
+}
+
+
+/* ------------------------------------------------------------
+   03. Footer Container
+   ------------------------------------------------------------ */
+
+.ts-footer-main .ts-container {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* ------------------------------------------------------------
+   04. Footer Grid
+   ------------------------------------------------------------ */
+
+.ts-footer-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1.7fr)
+    repeat(4, minmax(120px, 1fr));
+  gap: 56px;
+  align-items: start;
+}
+
+
+/* ------------------------------------------------------------
+   05. Footer Brand
+   ------------------------------------------------------------ */
+
+.ts-footer-brand {
+  max-width: 390px;
+}
+
+.ts-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 24px;
+}
+
+.ts-footer-logo img {
+  display: block;
+  width: auto;
+  height: 34px;
+  max-width: 180px;
+  object-fit: contain;
+}
+
+.ts-footer-brand > p {
+  max-width: 350px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+
+/* ------------------------------------------------------------
+   06. Footer Contact
+   ------------------------------------------------------------ */
+
+.ts-footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 28px;
+}
+
+.ts-footer-contact a {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 14px;
+  line-height: 1.5;
+  text-decoration: none;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.ts-footer-contact a:hover {
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+
+/* ------------------------------------------------------------
+   07. Footer Columns
+   ------------------------------------------------------------ */
+
+.ts-footer-column {
+  min-width: 0;
+}
+
+.ts-footer-column h3,
+.ts-footer-column h4 {
+  margin: 0 0 22px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ts-footer-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.ts-footer-links a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 13px;
+  line-height: 1.6;
+  text-decoration: none;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.ts-footer-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transition: right 180ms ease;
+}
+
+.ts-footer-links a:hover {
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+.ts-footer-links a:hover::after {
+  right: 0;
+}
+
+
+/* ------------------------------------------------------------
+   08. Footer Arrow Links
+   ------------------------------------------------------------ */
+
+.ts-footer-arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ts-footer-arrow-link svg,
+.ts-footer-arrow-link i {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  transition: transform 180ms ease;
+}
+
+.ts-footer-arrow-link:hover svg,
+.ts-footer-arrow-link:hover i {
+  transform: translateX(3px);
+}
+
+
+/* ------------------------------------------------------------
+   09. Footer Divider
+   ------------------------------------------------------------ */
+
+.ts-footer-divider {
+  width: 100%;
+  height: 1px;
+  margin: 64px 0 28px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+
+/* ------------------------------------------------------------
+   10. Footer Bottom
+   ------------------------------------------------------------ */
+
+.ts-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+}
+
+.ts-footer-bottom-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+
+.ts-footer-bottom-left p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.ts-footer-bottom-left span {
+  color: rgba(255, 255, 255, 0.18);
+}
+
+.ts-footer-tagline {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+
+/* ------------------------------------------------------------
+   11. Footer Bottom Right
+   ------------------------------------------------------------ */
+
+.ts-footer-bottom-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+
+/* ------------------------------------------------------------
+   12. Footer Theme Toggle
+   ------------------------------------------------------------ */
+
+.ts-footer-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.52);
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+.ts-footer-theme:hover {
+  color: #ffffff;
+}
+
+.ts-footer-theme:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 5px;
+}
+
+.ts-footer-theme-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+}
+
+.ts-footer-theme-icon svg,
+.ts-footer-theme-icon i {
+  width: 13px;
+  height: 13px;
+}
+
+
+/* ------------------------------------------------------------
+   13. Footer Social / Connect Links
+   ------------------------------------------------------------ */
+
+.ts-footer-socials {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 26px;
+}
+
+.ts-footer-socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.62);
+  text-decoration: none;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.ts-footer-socials a:hover {
+  color: #ffffff;
+  border-color: rgba(59, 130, 246, 0.55);
+  background: rgba(37, 99, 235, 0.12);
+  transform: translateY(-2px);
+}
+
+.ts-footer-socials svg,
+.ts-footer-socials i {
+  width: 14px;
+  height: 14px;
+}
+
+
+/* ------------------------------------------------------------
+   14. Footer Accent
+   ------------------------------------------------------------ */
+
+#site-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 420px;
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(59, 130, 246, 0.7),
+    transparent
+  );
+  pointer-events: none;
+}
+
+
+/* ------------------------------------------------------------
+   15. Footer Background Grid
+   ------------------------------------------------------------ */
+
+#site-footer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    );
+  background-size: 72px 72px;
+  mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    transparent 75%
+  );
+}
+
+
+/* ------------------------------------------------------------
+   16. Light Theme
+   ------------------------------------------------------------ */
+
+html[data-theme="light"] #site-footer,
+body[data-theme="light"] #site-footer {
+  background:
+    radial-gradient(
+      circle at 12% 20%,
+      rgba(37, 99, 235, 0.055),
+      transparent 30%
+    ),
+    #f7f9fc;
+  color: #0b0f1a;
+  border-top-color: rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="light"] .ts-footer-main,
+body[data-theme="light"] .ts-footer-main {
+  background:
+    radial-gradient(
+      circle at 12% 20%,
+      rgba(37, 99, 235, 0.055),
+      transparent 30%
+    ),
+    #f7f9fc;
+}
+
+html[data-theme="light"] .ts-footer-brand > p,
+body[data-theme="light"] .ts-footer-brand > p {
+  color: rgba(15, 23, 42, 0.58);
+}
+
+html[data-theme="light"] .ts-footer-contact a,
+body[data-theme="light"] .ts-footer-contact a {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+html[data-theme="light"] .ts-footer-contact a:hover,
+body[data-theme="light"] .ts-footer-contact a:hover {
+  color: #0b0f1a;
+}
+
+html[data-theme="light"] .ts-footer-column h3,
+html[data-theme="light"] .ts-footer-column h4,
+body[data-theme="light"] .ts-footer-column h3,
+body[data-theme="light"] .ts-footer-column h4 {
+  color: #0b0f1a;
+}
+
+html[data-theme="light"] .ts-footer-links a,
+body[data-theme="light"] .ts-footer-links a {
+  color: rgba(15, 23, 42, 0.58);
+}
+
+html[data-theme="light"] .ts-footer-links a:hover,
+body[data-theme="light"] .ts-footer-links a:hover {
+  color: #0b0f1a;
+}
+
+html[data-theme="light"] .ts-footer-divider,
+body[data-theme="light"] .ts-footer-divider {
+  background: rgba(15, 23, 42, 0.09);
+}
+
+html[data-theme="light"] .ts-footer-bottom-left p,
+body[data-theme="light"] .ts-footer-bottom-left p {
+  color: rgba(15, 23, 42, 0.42);
+}
+
+html[data-theme="light"] .ts-footer-tagline,
+body[data-theme="light"] .ts-footer-tagline {
+  color: rgba(15, 23, 42, 0.5) !important;
+}
+
+html[data-theme="light"] .ts-footer-theme,
+body[data-theme="light"] .ts-footer-theme {
+  color: rgba(15, 23, 42, 0.52);
+}
+
+html[data-theme="light"] .ts-footer-theme:hover,
+body[data-theme="light"] .ts-footer-theme:hover {
+  color: #0b0f1a;
+}
+
+html[data-theme="light"] .ts-footer-theme-icon,
+body[data-theme="light"] .ts-footer-theme-icon {
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="light"] .ts-footer-socials a,
+body[data-theme="light"] .ts-footer-socials a {
+  color: rgba(15, 23, 42, 0.58);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+html[data-theme="light"] .ts-footer-socials a:hover,
+body[data-theme="light"] .ts-footer-socials a:hover {
+  color: #0b0f1a;
+  border-color: rgba(37, 99, 235, 0.45);
+  background: rgba(37, 99, 235, 0.07);
+}
+
+
+/* ------------------------------------------------------------
+   17. Responsive — Large Tablet
+   ------------------------------------------------------------ */
+
+@media (max-width: 1100px) {
+  .ts-footer-grid {
+    grid-template-columns:
+      minmax(240px, 1.5fr)
+      repeat(3, minmax(120px, 1fr));
+    gap: 42px 32px;
+  }
+
+  .ts-footer-brand {
+    grid-column: 1 / -1;
+    max-width: 600px;
+  }
+
+  .ts-footer-brand > p {
+    max-width: 540px;
+  }
+}
+
+
+/* ------------------------------------------------------------
+   18. Responsive — Tablet
+   ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .ts-footer-main {
+    padding: 72px 0 36px;
+  }
+
+  .ts-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px 34px;
+  }
+
+  .ts-footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .ts-footer-divider {
+    margin-top: 52px;
+  }
+
+  .ts-footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ts-footer-bottom-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+
+/* ------------------------------------------------------------
+   19. Responsive — Mobile
+   ------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+  .ts-footer-main {
+    padding: 60px 0 30px;
+  }
+
+  .ts-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 38px 24px;
+  }
+
+  .ts-footer-brand {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+
+  .ts-footer-logo {
+    margin-bottom: 20px;
+  }
+
+  .ts-footer-brand > p {
+    max-width: 100%;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .ts-footer-contact {
+    margin-top: 22px;
+  }
+
+  .ts-footer-column h3,
+  .ts-footer-column h4 {
+    margin-bottom: 17px;
+    font-size: 10px;
+  }
+
+  .ts-footer-links {
+    gap: 10px;
+  }
+
+  .ts-footer-links a {
+    font-size: 12px;
+  }
+
+  .ts-footer-divider {
+    margin: 44px 0 24px;
+  }
+
+  .ts-footer-bottom-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .ts-footer-bottom-left span {
+    display: none;
+  }
+
+  .ts-footer-bottom-right {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .ts-footer-theme {
+    font-size: 10px;
+  }
+
+  #site-footer::after {
+    background-size: 52px 52px;
+  }
+}
+
+
+/* ------------------------------------------------------------
+   20. Very Small Screens
+   ------------------------------------------------------------ */
+
+@media (max-width: 420px) {
+  .ts-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .ts-footer-brand {
+    grid-column: auto;
+  }
+
+  .ts-footer-column {
+    width: 100%;
+  }
+
+  .ts-footer-bottom {
+    gap: 18px;
+  }
+}
+
+
+/* ------------------------------------------------------------
+   21. Reduced Motion
+   ------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .ts-footer-contact a,
+  .ts-footer-links a,
+  .ts-footer-arrow-link svg,
+  .ts-footer-arrow-link i,
+  .ts-footer-socials a {
+    transition: none;
+  }
+}
+
+
+/* ==========================================================================
+   THINKSOCIALLY — NAVBAR
+   Premium / Responsive / Glass Navigation
+   ========================================================================== */
+
+
+/* ==========================================================================
+   07. SITE HEADER
+   ========================================================================== */
+
+.ts-site-header {
+
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 1000;
+
+  height: var(--ts-nav-height);
+
+  border-bottom: 1px solid transparent;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--ts-bg) 70%,
+      transparent
+    );
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  transition:
+    background var(--ts-transition),
+    border-color var(--ts-transition),
+    box-shadow var(--ts-transition),
+    backdrop-filter var(--ts-transition);
+}
+
+
+/* ==========================================================================
+   SCROLLED HEADER
+   ========================================================================== */
+
+.ts-site-header.ts-header-scrolled {
+
+  background:
+    color-mix(
+      in srgb,
+      var(--ts-bg) 88%,
+      transparent
+    );
+
+  border-bottom-color: var(--ts-border);
+
+  box-shadow:
+    0 12px 45px rgba(0, 0, 0, .08);
+
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+}
+
+
+/* ==========================================================================
+   NAVIGATION SHELL
+   ========================================================================== */
+
+.ts-nav-shell {
+
+  width:
+    min(
+      calc(100% - 48px),
+      1440px
+    );
+
+  height: 100%;
+
+  margin-inline: auto;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 26px;
+}
+
+
+/* ==========================================================================
+   BRAND
+   ========================================================================== */
+
+.ts-brand {
+
+  position: relative;
+
+  display: inline-flex;
+
+  flex-shrink: 0;
+
+  align-items: center;
+
+  gap: 11px;
+
+  color: var(--ts-text);
+
+  text-decoration: none;
+
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+
+.ts-brand:hover {
+
+  opacity: .96;
+
+  transform: translateY(-1px);
+}
+
+
+/* ==========================================================================
+   BRAND MARK
+   ========================================================================== */
+
+.ts-brand-mark {
+
+  position: relative;
+
+  display: inline-flex;
+
+  width: 42px;
+  height: 42px;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, .12);
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--ts-blue),
+      var(--ts-blue-bright)
+    );
+
+  color: white;
+
+  font-size: .72rem;
+
+  font-weight: 800;
+
+  letter-spacing: -.045em;
+
+  box-shadow:
+    0 8px 24px rgba(37, 99, 235, .24);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+
+.ts-brand-mark::before {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, .20),
+      transparent 50%
+    );
+
+  pointer-events: none;
+}
+
+
+.ts-brand:hover .ts-brand-mark {
+
+  transform:
+    translateY(-1px)
+    scale(1.02);
+
+  box-shadow:
+    0 12px 30px rgba(37, 99, 235, .32);
+}
+
+
+/* ==========================================================================
+   WORDMARK
+   ========================================================================== */
+
+.ts-brand-wordmark {
+
+  color: var(--ts-text);
+
+  font-size: .88rem;
+
+  font-weight: 750;
+
+  letter-spacing: -.025em;
+
+  line-height: 1;
+}
+
+
+/* ==========================================================================
+   DESKTOP NAVIGATION
+   ========================================================================== */
+
+.ts-desktop-nav {
+
+  display: none;
+
+  flex: 1;
+
+  min-width: 0;
+
+  justify-content: center;
+}
+
+
+.ts-desktop-nav > ul {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 5px;
+
+  margin: 0;
+
+  padding: 0;
+
+  list-style: none;
+}
+
+
+/* ==========================================================================
+   NAV ITEM
+   ========================================================================== */
+
+.ts-nav-item {
+
+  position: relative;
+}
+
+
+/* ==========================================================================
+   NAV LINK
+   ========================================================================== */
+
+.ts-nav-link {
+
+  position: relative;
+
+  display: inline-flex;
+
+  height: 44px;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  padding:
+    0 13px;
+
+  border:
+    1px solid transparent;
+
+  border-radius: 11px;
+
+  background: transparent;
+
+  color: var(--ts-text-muted);
+
+  font-family: inherit;
+
+  font-size: .76rem;
+
+  font-weight: 560;
+
+  line-height: 1;
+
+  text-decoration: none;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    color 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+
+/* ==========================================================================
+   NAV HOVER INDICATOR
+   ========================================================================== */
+
+.ts-nav-link::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: 14px;
+  right: 14px;
+
+  bottom: 5px;
+
+  height: 2px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--ts-blue),
+      var(--ts-blue-bright)
+    );
+
+  opacity: 0;
+
+  transform:
+    scaleX(.35);
+
+  transform-origin: center;
+
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+
+/* ==========================================================================
+   NAV ICON
+   ========================================================================== */
+
+.ts-nav-link svg {
+
+  width: 14px;
+  height: 14px;
+
+  flex-shrink: 0;
+
+  opacity: .65;
+
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+
+/* ==========================================================================
+   NAV HOVER
+   ========================================================================== */
+
+.ts-nav-link:hover,
+.ts-nav-link:focus-visible {
+
+  color: var(--ts-text);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--ts-surface) 92%,
+      transparent
+    );
+
+  border-color: var(--ts-border);
+}
+
+
+.ts-nav-link:hover::after,
+.ts-nav-link:focus-visible::after {
+
+  opacity: 1;
+
+  transform: scaleX(1);
+}
+
+
+.ts-nav-link:hover svg,
+.ts-nav-link:focus-visible svg {
+
+  opacity: 1;
+}
+
+
+/* ==========================================================================
+   OPEN DROPDOWN
+   ========================================================================== */
+
+.ts-nav-link[aria-expanded="true"] {
+
+  color: var(--ts-text);
+
+  background: var(--ts-surface);
+
+  border-color: var(--ts-border);
+}
+
+
+.ts-nav-link[aria-expanded="true"]::after {
+
+  opacity: 1;
+
+  transform: scaleX(1);
+}
+
+
+.ts-nav-link[aria-expanded="true"] svg {
+
+  opacity: 1;
+
+  transform: rotate(180deg);
+}
+
+
+/* ==========================================================================
+   DIRECT LINKS
+   ========================================================================== */
+
+.ts-nav-direct {
+
+  border-color: transparent;
+}
+
+
+/* ==========================================================================
+   NAVIGATION ACTIONS
+   ========================================================================== */
+
+.ts-nav-actions {
+
+  position: relative;
+
+  display: none;
+
+  flex-shrink: 0;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding-left: 22px;
+}
+
+
+/* ==========================================================================
+   NAVIGATION DIVIDER
+   ========================================================================== */
+
+.ts-nav-actions::before {
+
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+
+  top: 50%;
+
+  width: 1px;
+
+  height: 28px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      var(--ts-border),
+      transparent
+    );
+
+  transform:
+    translateY(-50%);
+}
+
+
+/* ==========================================================================
+   ACTION BASE
+   ========================================================================== */
+
+.ts-nav-support,
+.ts-nav-contact {
+
+  display: inline-flex;
+
+  height: 44px;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  padding:
+    0 14px;
+
+  border-radius: 11px;
+
+  font-size: .73rem;
+
+  font-weight: 650;
+
+  line-height: 1;
+
+  text-decoration: none;
+
+  white-space: nowrap;
+
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+
+/* ==========================================================================
+   DESKTOP SUPPORT
+   ========================================================================== */
+
+.ts-nav-support {
+
+  border:
+    1px solid var(--ts-border);
+
+  background:
+    color-mix(
+      in srgb,
+      var(--ts-surface) 65%,
+      transparent
+    );
+
+  color: var(--ts-text-soft);
+
+  opacity: .88;
+}
+
+
+.ts-nav-support svg {
+
+  width: 15px;
+  height: 15px;
+
+  color: var(--ts-blue-bright);
+
+  transition:
+    transform 180ms ease;
+}
+
+
+.ts-nav-support:hover {
+
+  background: var(--ts-surface);
+
+  border-color: var(--ts-border-strong);
+
+  color: var(--ts-text);
+
+  opacity: 1;
+
+  transform:
+    translateY(-1px);
+}
+
+
+.ts-nav-support:hover svg {
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* ==========================================================================
+   CONTACT
+   ========================================================================== */
+
+.ts-nav-contact {
+
+  padding-inline: 17px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--ts-blue),
+      var(--ts-blue-bright)
+    );
+
+  color: white;
+
+  box-shadow:
+    0 8px 24px rgba(37, 99, 235, .20);
+}
+
+
+.ts-nav-contact svg {
+
+  width: 15px;
+  height: 15px;
+
+  transition:
+    transform 180ms ease;
+}
+
+
+.ts-nav-contact:hover {
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--ts-blue-dark),
+      var(--ts-blue)
+    );
+
+  color: white;
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 12px 30px rgba(37, 99, 235, .28);
+}
+
+
+.ts-nav-contact:hover svg {
+
+  transform:
+    translate(
+      2px,
+      -2px
+    );
+}
+
+
+/* ==========================================================================
+   MOBILE MENU BUTTON
+   ========================================================================== */
+
+.ts-mobile-toggle {
+
+  display: inline-flex;
+
+  width: 44px;
+  height: 44px;
+
+  margin-left: auto;
+
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid var(--ts-border);
+
+  border-radius: 12px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--ts-surface) 90%,
+      transparent
+    );
+
+  color: var(--ts-text);
+
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, .05);
+
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+
+.ts-mobile-toggle:hover {
+
+  background: var(--ts-surface);
+
+  border-color: var(--ts-border-strong);
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 9px 24px rgba(0, 0, 0, .08);
+}
+
+
+.ts-mobile-toggle:active {
+
+  transform:
+    translateY(0)
+    scale(.96);
+}
+
+
+.ts-mobile-toggle svg {
+
+  width: 20px;
+  height: 20px;
+}
+
+
+/* ==========================================================================
+   08. MEGA MENU
+   ========================================================================== */
+
+.ts-mega-menu {
+
+  position: fixed;
+
+  top:
+    calc(
+      var(--ts-nav-height) + 12px
+    );
+
+  left: 50%;
+
+  z-index: 1100;
+
+  width:
+    min(
+      calc(100vw - 56px),
+      1120px
+    );
+
+  max-height:
+    calc(
+      100vh
+      - var(--ts-nav-height)
+      - 36px
+    );
+
+  overflow: auto;
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transform:
+    translate(-50%, -12px)
+    scale(.97);
+
+  transform-origin:
+    top center;
+
+  border:
+    1px solid var(--ts-border-strong);
+
+  border-radius: 24px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--ts-bg-elevated) 94%,
+      transparent
+    );
+
+  box-shadow:
+    0 35px 90px rgba(0, 0, 0, .16),
+    0 10px 35px rgba(0, 0, 0, .08);
+
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+
+  scrollbar-width: thin;
+
+  transition:
+    opacity 180ms ease,
+    visibility 180ms ease,
+    transform 220ms cubic-bezier(.2, .7, .2, 1);
+}
+
+
+/* ==========================================================================
+   MEGA MENU OPEN
+   ========================================================================== */
+
+.ts-mega-menu.ts-menu-open {
+
+  opacity: 1;
+
+  visibility: visible;
+
+  pointer-events: auto;
+
+  transform:
+    translate(-50%, 0)
+    scale(1);
+}
+
+
+/* ==========================================================================
+   MEGA MENU INNER
+   ========================================================================== */
+
+.ts-mega-inner {
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(290px, .72fr)
+    minmax(0, 1.28fr);
+
+  gap: 0;
+
+  padding: 10px;
+}
+
+
+/* ==========================================================================
+   MEGA MENU INTRO PANEL
+   ========================================================================== */
+
+.ts-mega-intro {
+
+  position: relative;
+
+  display: flex;
+
+  min-height: 350px;
+
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  overflow: hidden;
+
+  padding: 32px;
+
+  border:
+    1px solid
+    rgba(59, 130, 246, .08);
+
+  border-radius: 18px;
+
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(59, 130, 246, .14),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(59, 130, 246, .10),
+      rgba(59, 130, 246, .025)
+    );
+}
+
+
+/* --------------------------------------------------------------------------
+   INTRO GLOW
+   -------------------------------------------------------------------------- */
+
+.ts-mega-intro::before {
+
+  content: "";
+
+  position: absolute;
+
+  width: 220px;
+  height: 220px;
+
+  right: -90px;
+  top: -90px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(59, 130, 246, .12);
+
+  filter: blur(10px);
+
+  pointer-events: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   INTRO GRID
+   -------------------------------------------------------------------------- */
+
+.ts-mega-intro::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, .035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, .035) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    32px 32px;
+
+  opacity: .35;
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================================
+   SECURITY INTRO
+   ========================================================================== */
+
+.ts-mega-intro-security {
+
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(37, 99, 235, .15),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(37, 99, 235, .12),
+      rgba(15, 23, 42, .035)
+    );
+}
+
+
+/* ==========================================================================
+   MEGA KICKER
+   ========================================================================== */
+
+.ts-mega-kicker {
+
+  position: relative;
+
+  z-index: 2;
+
+  margin-bottom: auto;
+
+  color: var(--ts-blue-bright);
+
+  font-size: .63rem;
+
+  font-weight: 750;
+
+  letter-spacing: .17em;
+
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================================
+   MEGA INTRO HEADING
+   ========================================================================== */
+
+.ts-mega-intro h2 {
+
+  position: relative;
+
+  z-index: 2;
+
+  max-width: 340px;
+
+  margin:
+    70px 0 12px;
+
+  color: var(--ts-text);
+
+  font-size: 1.85rem;
+
+  font-weight: 700;
+
+  line-height: 1.02;
+
+  letter-spacing: -.045em;
+}
+
+
+/* ==========================================================================
+   MEGA INTRO TEXT
+   ========================================================================== */
+
+.ts-mega-intro p {
+
+  position: relative;
+
+  z-index: 2;
+
+  max-width: 365px;
+
+  margin: 0;
+
+  color: var(--ts-text-muted);
+
+  font-size: .80rem;
+
+  line-height: 1.7;
+}
+
+
+/* ==========================================================================
+   MEGA PRIMARY LINK
+   ========================================================================== */
+
+.ts-mega-primary-link {
+
+  position: relative;
+
+  z-index: 2;
+
+  display: inline-flex;
+
+  width: fit-content;
+
+  margin-top: 22px;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: var(--ts-text);
+
+  font-size: .75rem;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    color 180ms ease;
+}
+
+
+.ts-mega-primary-link:hover {
+
+  color:
+    var(--ts-blue-bright);
+}
+
+
+.ts-mega-primary-link svg {
+
+  width: 14px;
+  height: 14px;
+
+  color:
+    var(--ts-blue-bright);
+
+  transition:
+    transform 180ms ease;
+}
+
+
+.ts-mega-primary-link:hover svg {
+
+  transform:
+    translate(
+      3px,
+      -2px
+    );
+}
+
+
+/* ==========================================================================
+   MEGA LINKS AREA
+   ========================================================================== */
+
+.ts-mega-links {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  align-content: start;
+
+  gap: 5px;
+
+  padding:
+    12px 12px 12px 16px;
+}
+
+
+/* ==========================================================================
+   MEGA SERVICE CARD
+   ========================================================================== */
+
+.ts-mega-links > a {
+
+  position: relative;
+
+  display: flex;
+
+  min-width: 0;
+
+  min-height: 84px;
+
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 13px;
+
+  overflow: hidden;
+
+  border:
+    1px solid transparent;
+
+  border-radius: 14px;
+
+  background: transparent;
+
+  text-decoration: none;
+
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+
+/* --------------------------------------------------------------------------
+   CARD LIGHT
+   -------------------------------------------------------------------------- */
+
+.ts-mega-links > a::before {
+
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 2px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      var(--ts-blue),
+      var(--ts-blue-bright)
+    );
+
+  opacity: 0;
+
+  transform:
+    scaleY(.35);
+
+  transform-origin: center;
+
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+
+/* --------------------------------------------------------------------------
+   CARD HOVER
+   -------------------------------------------------------------------------- */
+
+.ts-mega-links > a:hover {
+
+  background:
+    color-mix(
+      in srgb,
+      var(--ts-surface) 94%,
+      transparent
+    );
+
+  border-color:
+    var(--ts-border);
+
+  transform:
+    translateX(3px);
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, .045);
+}
+
+
+.ts-mega-links > a:hover::before {
+
+  opacity: 1;
+
+  transform:
+    scaleY(1);
+}
+
+
+/* ==========================================================================
+   MEGA ICON
+   ========================================================================== */
+
+.ts-mega-icon {
+
+  display: inline-flex;
+
+  flex-shrink: 0;
+
+  width: 40px;
+  height: 40px;
+
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid var(--ts-border);
+
+  border-radius: 11px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--ts-surface) 92%,
+      transparent
+    );
+
+  color:
+    var(--ts-blue-bright);
+
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, .035);
+
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+
+.ts-mega-links > a:hover .ts-mega-icon {
+
+  background:
+    rgba(37, 99, 235, .08);
+
+  border-color:
+    rgba(37, 99, 235, .20);
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 6px 18px rgba(37, 99, 235, .10);
+}
+
+
+.ts-mega-icon svg {
+
+  width: 17px;
+  height: 17px;
+}
+
+
+/* ==========================================================================
+   MEGA SERVICE TEXT
+   ========================================================================== */
+
+.ts-mega-links strong {
+
+  display: block;
+
+  color: var(--ts-text);
+
+  font-size: .75rem;
+
+  font-weight: 680;
+
+  line-height: 1.25;
+}
+
+
+.ts-mega-links small {
+
+  display: block;
+
+  margin-top: 5px;
+
+  color: var(--ts-text-faint);
+
+  font-size: .65rem;
+
+  line-height: 1.45;
+}
+
+
+/* ==========================================================================
+   SECURITY NOTE
+   ========================================================================== */
+
+.ts-mega-security-note {
+
+  display: flex;
+
+  grid-column: 2;
+
+  gap: 12px;
+
+  margin:
+    3px 12px 12px 16px;
+
+  padding: 14px;
+
+  border:
+    1px solid var(--ts-border);
+
+  border-radius: 14px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--ts-surface) 88%,
+      transparent
+    );
+
+  box-shadow:
+    0 5px 18px rgba(0, 0, 0, .035);
+}
+
+
+/* ==========================================================================
+   SECURITY ICON
+   ========================================================================== */
+
+.ts-mega-security-icon {
+
+  display: inline-flex;
+
+  flex-shrink: 0;
+
+  width: 35px;
+  height: 35px;
+
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    rgba(59, 130, 246, .14);
+
+  border-radius: 10px;
+
+  background:
+    rgba(59, 130, 246, .09);
+
+  color:
+    var(--ts-blue-bright);
+}
+
+
+.ts-mega-security-icon svg {
+
+  width: 16px;
+  height: 16px;
+}
+
+
+/* ==========================================================================
+   SECURITY TEXT
+   ========================================================================== */
+
+.ts-mega-security-note strong {
+
+  display: block;
+
+  color: var(--ts-text);
+
+  font-size: .73rem;
+
+  font-weight: 680;
+}
+
+
+.ts-mega-security-note p {
+
+  margin:
+    4px 0 0;
+
+  color: var(--ts-text-muted);
+
+  font-size: .65rem;
+
+  line-height: 1.5;
+}
+
+
+/* ==========================================================================
+   ACCESSIBILITY
+   ========================================================================== */
+
+.ts-brand:focus-visible,
+.ts-nav-link:focus-visible,
+.ts-nav-support:focus-visible,
+.ts-nav-contact:focus-visible,
+.ts-mobile-toggle:focus-visible,
+.ts-mega-primary-link:focus-visible,
+.ts-mega-links > a:focus-visible {
+
+  outline:
+    2px solid var(--ts-blue-bright);
+
+  outline-offset: 3px;
+}
+
+
+/* ==========================================================================
+   DESKTOP
+   ========================================================================== */
+
+@media (min-width: 1180px) {
+
+  .ts-desktop-nav {
+
+    display: flex;
+  }
+
+
+  .ts-nav-actions {
+
+    display: flex;
+  }
+
+
+  .ts-mobile-toggle {
+
+    display: none;
+  }
+
+}
+
+
+/* ==========================================================================
+   MEDIUM DESKTOP
+   ========================================================================== */
+
+@media (min-width: 1180px) and (max-width: 1399px) {
+
+  .ts-nav-shell {
+
+    width:
+      min(
+        calc(100% - 36px),
+        1360px
+      );
+
+    gap: 17px;
+  }
+
+
+  .ts-brand-wordmark {
+
+    font-size: .80rem;
+  }
+
+
+  .ts-brand-mark {
+
+    width: 40px;
+    height: 40px;
+  }
+
+
+  .ts-nav-link {
+
+    height: 43px;
+
+    padding-inline: 7px;
+
+    font-size: .70rem;
+  }
+
+
+  .ts-nav-support,
+  .ts-nav-contact {
+
+    height: 43px;
+
+    padding-inline: 9px;
+
+    font-size: .68rem;
+  }
+
+
+  .ts-nav-actions {
+
+    padding-left: 13px;
+  }
+
+}
+
+
+/* ==========================================================================
+   TABLET
+   ========================================================================== */
+
+@media (max-width: 1179px) {
+
+  .ts-nav-shell {
+
+    width:
+      calc(100% - 32px);
+  }
+
+}
+
+
+/* ==========================================================================
+   MOBILE
+   ========================================================================== */
+
+@media (max-width: 640px) {
+
+  .ts-nav-shell {
+
+    width:
+      calc(100% - 24px);
+  }
+
+
+  .ts-brand {
+
+    gap: 9px;
+  }
+
+
+  .ts-brand-mark {
+
+    width: 37px;
+    height: 37px;
+
+    border-radius: 10px;
+  }
+
+
+  .ts-brand-wordmark {
+
+    font-size: .77rem;
+  }
+
+
+  .ts-mobile-toggle {
+
+    width: 42px;
+    height: 42px;
+  }
+
+
+  /* ------------------------------------------------------------------------
+     MOBILE MEGA MENU
+     ------------------------------------------------------------------------ */
+
+  .ts-mega-menu {
+
+    top:
+      calc(
+        var(--ts-nav-height) + 7px
+      );
+
+    width:
+      calc(100vw - 20px);
+
+    max-height:
+      calc(
+        100vh
+        - var(--ts-nav-height)
+        - 16px
+      );
+
+    border-radius: 19px;
+
+    transform:
+      translate(-50%, -8px)
+      scale(.98);
+  }
+
+
+  .ts-mega-menu.ts-menu-open {
+
+    transform:
+      translate(-50%, 0)
+      scale(1);
+  }
+
+
+  .ts-mega-inner {
+
+    grid-template-columns: 1fr;
+
+    padding: 8px;
+  }
+
+
+  .ts-mega-intro {
+
+    min-height: 220px;
+
+    padding: 22px;
+
+    border-radius: 14px;
+  }
+
+
+  .ts-mega-intro h2 {
+
+    margin-top: 38px;
+
+    font-size: 1.45rem;
+  }
+
+
+  .ts-mega-intro p {
+
+    font-size: .72rem;
+  }
+
+
+  .ts-mega-links {
+
+    grid-template-columns: 1fr;
+
+    gap: 3px;
+
+    padding:
+      8px 4px 4px;
+  }
+
+
+  .ts-mega-links > a {
+
+    min-height: 70px;
+
+    padding: 11px;
+  }
+
+
+  .ts-mega-security-note {
+
+    grid-column: 1;
+
+    margin:
+      4px 4px 4px;
+  }
+
+}
+
+
+/* ==========================================================================
+   VERY SMALL SCREENS
+   ========================================================================== */
+
+@media (max-width: 420px) {
+
+  .ts-nav-shell {
+
+    width:
+      calc(100% - 20px);
+  }
+
+
+  .ts-brand-wordmark {
+
+    font-size: .70rem;
+  }
+
+
+  .ts-brand-mark {
+
+    width: 35px;
+    height: 35px;
+  }
+
+
+  .ts-mobile-toggle {
+
+    width: 40px;
+    height: 40px;
+  }
+
+
+  .ts-mega-intro {
+
+    min-height: 205px;
+  }
+
+
+  .ts-mega-intro h2 {
+
+    font-size: 1.3rem;
+  }
+
+}
+
+
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ts-site-header,
+  .ts-brand,
+  .ts-brand-mark,
+  .ts-nav-link,
+  .ts-nav-link::after,
+  .ts-nav-link svg,
+  .ts-nav-support,
+  .ts-nav-contact,
+  .ts-nav-contact svg,
+  .ts-mobile-toggle,
+  .ts-mega-menu,
+  .ts-mega-primary-link,
+  .ts-mega-primary-link svg,
+  .ts-mega-links > a,
+  .ts-mega-links > a::before,
+  .ts-mega-icon {
+
+    transition: none !important;
+  }
+
+}
+
+:root {
+  --ts-nav-height: 78px;
+}
+/* ============================================================
+   DYNAMIC CAPABILITIES
+   ============================================================ */
+
+.ts-capability-visual {
+  position: relative;
+  overflow: hidden;
+}
+
+.ts-capability-visual-status {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 5;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 9px 13px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+
+  background: rgba(8, 12, 20, 0.58);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  color: rgba(255, 255, 255, 0.9);
+
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ts-capability-icon-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 88px;
+  height: 88px;
+
+  transform: translate(-50%, -50%);
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+
+  background: rgba(8, 12, 20, 0.58);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  color: #ffffff;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.ts-capability-panel:hover .ts-capability-icon-card {
+  transform: translate(-50%, -50%) scale(1.06);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.ts-capability-visual-content {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 28px;
+  z-index: 5;
+
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ts-capability-visual-content span {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.ts-capability-visual-content strong {
+  max-width: 440px;
+
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  line-height: 1.08;
+  font-weight: 500;
+
+  color: #ffffff;
+}
+
+
+/* ============================================================
+   CAPABILITY TABS
+   ============================================================ */
+
+.ts-capability-tab {
+  display: grid;
+  grid-template-columns: 34px 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+
+  cursor: pointer;
+}
+
+.ts-capability-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+
+  color: currentColor;
+}
+
+.ts-capability-tab-number {
+  opacity: 0.55;
+}
+
+.ts-capability-tab-title {
+  text-align: left;
+}
+
+
+/* ============================================================
+   DYNAMIC CAPABILITY COPY
+   ============================================================ */
+
+.ts-capability-copy {
+  animation: tsCapabilityFadeIn 0.35s ease both;
+}
+
+@keyframes tsCapabilityFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ts-capability-copy .ts-mono-label {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.ts-capability-copy a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+
+/* ============================================================
+   SUPPORTING ICONS
+   ============================================================ */
+
+.ts-capability-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  margin-top: 30px;
+}
+
+.ts-capability-support-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-height: 48px;
+  padding: 12px 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.025);
+
+  color: rgba(255, 255, 255, 0.62);
+
+  font-size: 0.72rem;
+  line-height: 1.3;
+
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.ts-capability-support-item svg {
+  flex: 0 0 auto;
+}
+
+.ts-capability-support-item:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+  .ts-capability-icon-card {
+    width: 72px;
+    height: 72px;
+
+    border-radius: 20px;
+  }
+
+  .ts-capability-visual-status {
+    top: 18px;
+    left: 18px;
+  }
+
+  .ts-capability-visual-content {
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+  }
+
+  .ts-capability-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 640px) {
+
+  .ts-capability-tab {
+    grid-template-columns: 28px 28px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .ts-capability-tab-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .ts-capability-icon-card {
+    width: 64px;
+    height: 64px;
+
+    border-radius: 18px;
+  }
+
+  .ts-capability-icon-card svg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .ts-capability-visual-status {
+    top: 14px;
+    left: 14px;
+
+    padding: 7px 10px;
+
+    font-size: 0.6rem;
+  }
+
+  .ts-capability-visual-content {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .ts-capability-visual-content strong {
+    font-size: 1.2rem;
+  }
+}
+
+/* ============================================================
+   TECHNOLOGY EVERYWHERE YOU GO
+   ============================================================ */
+
+.ts-global-technology-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.ts-global-technology-header {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.35fr) minmax(0, 1fr);
+  gap: 70px;
+  align-items: start;
+  margin-bottom: 70px;
+}
+
+.ts-global-technology-heading {
+  max-width: 850px;
+}
+
+.ts-global-technology-heading p {
+  max-width: 650px;
+  margin-top: 24px;
+  line-height: 1.8;
+  opacity: 0.68;
+}
+
+
+/* ============================================================
+   GLOBE SHELL
+   ============================================================ */
+
+.ts-global-technology-shell {
+  position: relative;
+  width: 100%;
+  min-height: 760px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.55fr);
+  overflow: hidden;
+  border: 1px solid rgba(100, 150, 255, 0.16);
+  border-radius: 32px;
+  background:
+    radial-gradient(
+      circle at 35% 50%,
+      rgba(55, 112, 255, 0.12),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 75% 30%,
+      rgba(71, 125, 255, 0.08),
+      transparent 30%
+    ),
+    rgba(8, 13, 25, 0.72);
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+
+/* ============================================================
+   GLOBE STAGE
+   ============================================================ */
+
+.ts-global-globe-stage {
+  position: relative;
+  min-width: 0;
+  min-height: 760px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.ts-global-globe-stage:active {
+  cursor: grabbing;
+}
+
+
+/* ============================================================
+   GLOBE ATMOSPHERE
+   ============================================================ */
+
+.ts-global-globe-glow {
+  position: absolute;
+  width: 620px;
+  height: 620px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(72, 135, 255, 0.18) 0%,
+      rgba(48, 105, 255, 0.08) 35%,
+      transparent 68%
+    );
+  filter: blur(25px);
+  pointer-events: none;
+  animation: ts-globe-pulse 5s ease-in-out infinite;
+}
+
+@keyframes ts-globe-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.72;
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.04);
+    opacity: 1;
+  }
+}
+
+
+/* ============================================================
+   GLOBE GRID
+   ============================================================ */
+
+.ts-global-globe-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+}
+
+.ts-global-globe-grid span {
+  position: absolute;
+  border: 1px solid rgba(92, 145, 255, 0.16);
+  border-radius: 50%;
+}
+
+.ts-global-globe-grid span:nth-child(1) {
+  width: 75%;
+  height: 75%;
+  left: 12.5%;
+  top: 12.5%;
+}
+
+.ts-global-globe-grid span:nth-child(2) {
+  width: 58%;
+  height: 58%;
+  left: 21%;
+  top: 21%;
+}
+
+.ts-global-globe-grid span:nth-child(3) {
+  width: 42%;
+  height: 42%;
+  left: 29%;
+  top: 29%;
+}
+
+.ts-global-globe-grid span:nth-child(4) {
+  width: 88%;
+  height: 40%;
+  left: 6%;
+  top: 30%;
+  transform: rotate(-18deg);
+}
+
+
+/* ============================================================
+   GLOBE INTERACTION HINT
+   ============================================================ */
+
+.ts-global-globe-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 15px;
+  border: 1px solid rgba(110, 160, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(7, 12, 23, 0.72);
+  backdrop-filter: blur(18px);
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.ts-global-globe-hint-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: rgba(100, 160, 255, 0.95);
+}
+
+
+/* ============================================================
+   GLOBE INFORMATION PANEL
+   ============================================================ */
+
+.ts-global-technology-info {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 58px 48px;
+  border-left: 1px solid rgba(100, 150, 255, 0.12);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.025),
+      rgba(255, 255, 255, 0)
+    );
+}
+
+.ts-global-info-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(150, 185, 255, 0.8);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+}
+
+.ts-global-info-main {
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 70px 0;
+}
+
+.ts-global-info-main h3 {
+  margin: 17px 0 22px;
+  font-size: clamp(2rem, 3vw, 3.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+}
+
+.ts-global-info-main p {
+  max-width: 390px;
+  margin: 0;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.92rem;
+}
+
+
+/* ============================================================
+   GLOBAL STATS
+   ============================================================ */
+
+.ts-global-info-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ts-global-stat {
+  min-width: 0;
+}
+
+.ts-global-stat strong {
+  display: block;
+  font-size: 1.55rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.ts-global-stat span {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.59rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+
+/* ============================================================
+   GLOBAL FOOTER TAGS
+   ============================================================ */
+
+.ts-global-info-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.ts-global-info-footer span {
+  padding: 7px 9px;
+  border: 1px solid rgba(110, 160, 255, 0.12);
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+}
+
+
+/* ============================================================
+   RESPONSIVE — LARGE TABLETS
+   ============================================================ */
+
+@media (max-width: 1100px) {
+
+  .ts-global-technology-header {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin-bottom: 45px;
+  }
+
+  .ts-global-technology-shell {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .ts-global-globe-stage {
+    min-height: 650px;
+  }
+
+  .ts-global-technology-info {
+    min-height: 520px;
+    border-left: 0;
+    border-top: 1px solid rgba(100, 150, 255, 0.12);
+    padding: 48px;
+  }
+
+  .ts-global-info-main {
+    padding: 50px 0;
+  }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE — TABLET
+   ============================================================ */
+
+@media (max-width: 760px) {
+
+  .ts-global-technology-shell {
+    border-radius: 24px;
+  }
+
+  .ts-global-globe-stage {
+    min-height: 520px;
+  }
+
+  .ts-global-globe-glow {
+    width: 420px;
+    height: 420px;
+  }
+
+  .ts-global-technology-info {
+    padding: 36px 28px;
+    min-height: auto;
+  }
+
+  .ts-global-info-main {
+    padding: 45px 0;
+  }
+
+  .ts-global-info-main h3 {
+    font-size: 2.4rem;
+  }
+
+  .ts-global-info-stats {
+    gap: 8px;
+  }
+
+  .ts-global-globe-hint {
+    bottom: 22px;
+  }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE — MOBILE
+   ============================================================ */
+
+@media (max-width: 520px) {
+
+  .ts-global-technology-header {
+    margin-bottom: 32px;
+  }
+
+  .ts-global-technology-shell {
+    border-radius: 20px;
+  }
+
+  .ts-global-globe-stage {
+    min-height: 390px;
+  }
+
+  .ts-global-globe-glow {
+    width: 300px;
+    height: 300px;
+  }
+
+  .ts-global-technology-info {
+    padding: 30px 22px;
+  }
+
+  .ts-global-info-main {
+    padding: 38px 0;
+  }
+
+  .ts-global-info-main h3 {
+    font-size: 2rem;
+  }
+
+  .ts-global-info-main p {
+    font-size: 0.85rem;
+  }
+
+  .ts-global-info-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .ts-global-stat {
+    display: grid;
+    grid-template-columns: 55px 1fr;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ts-global-stat span {
+    margin-top: 0;
+  }
+
+  .ts-global-info-footer {
+    gap: 6px;
+  }
+
+  .ts-global-globe-hint {
+    font-size: 0.55rem;
+    bottom: 15px;
+  }
+
+}
+
+/* ============================================================
+   GLOBAL TECHNOLOGY GLOBE — RENDERING FIX
+   ============================================================ */
+
+.ts-global-globe-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 720px;
+}
+
+.ts-global-globe-canvas {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  min-height: 720px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  cursor: grab;
+}
+
+.ts-global-globe-canvas:active {
+  cursor: grabbing;
+}
+
+.ts-global-globe-canvas canvas {
+  display: block !important;
+  max-width: 100%;
+  height: auto !important;
+}
+
+.ts-global-globe-live {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+
+  z-index: 10;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 9px 13px;
+
+  border: 1px solid rgba(100, 150, 255, 0.2);
+  border-radius: 999px;
+
+  background: rgba(7, 12, 24, 0.72);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.ts-global-globe-live .ts-status-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+
+  animation: ts-globe-live-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes ts-globe-live-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .ts-global-globe-stage {
+    min-height: 600px;
+  }
+
+  .ts-global-globe-canvas {
+    min-height: 600px;
+  }
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .ts-global-globe-stage {
+    min-height: 430px;
+  }
+
+  .ts-global-globe-canvas {
+    min-height: 430px;
+  }
+
+  .ts-global-globe-live {
+    top: 14px;
+    right: 14px;
+
+    padding: 7px 10px;
+
+    font-size: 8px;
+  }
+
+  .ts-global-globe-hint {
+    bottom: 14px !important;
+  }
+}
+
+.ts-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ts-hero-tag svg {
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+}
+
+/* ============================================================================
+   THINKSOCIALLY — MOTION LAYER
+   ----------------------------------------------------------------------------
+   Paste at the VERY END of your stylesheet.
+
+   24  Motion tokens & keyframes
+   25  Page-load sequence (header -> hero -> 3D image -> tags)
+   26  Scroll reveals (CSS only, no JS in modern browsers)
+   27  Scroll reveal fallback (Firefox etc. — needs reveal-fallback.js)
+   28  Polish: progress bar, buttons, card hover glow, ambient drift
+
+   Everything is inside prefers-reduced-motion: no-preference, so people who
+   ask for less motion get the normal static page.
+
+   NOTE: entrance animations use fill-mode "backwards" on purpose. After they
+   finish, no transform/translate is left on the element, so the fixed mega
+   menus and your existing hover effects keep working.
+   ============================================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ==========================================================================
+     24. MOTION TOKENS & KEYFRAMES
+     ========================================================================== */
+
+  :root {
+    --ts-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ts-ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes ts-rise {
+    from { opacity: 0; translate: 0 34px; filter: blur(8px); }
+    to   { opacity: 1; translate: 0 0;    filter: blur(0); }
+  }
+
+  @keyframes ts-rise-sm {
+    from { opacity: 0; translate: 0 22px; }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  @keyframes ts-drop {
+    from { opacity: 0; translate: 0 -16px; }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  @keyframes ts-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes ts-scale-in {
+    from { opacity: 0; scale: 0.94; }
+    to   { opacity: 1; scale: 1; }
+  }
+
+  @keyframes ts-hero-visual-in {
+    from { opacity: 0; translate: 70px 30px; scale: 0.92; filter: blur(10px); }
+    to   { opacity: 1; translate: 0 0;       scale: 1;    filter: blur(0); }
+  }
+
+  @keyframes ts-pop {
+    from { opacity: 0; scale: 0.7; }
+    60%  { opacity: 1; scale: 1.06; }
+    to   { opacity: 1; scale: 1; }
+  }
+
+  @keyframes ts-line-grow {
+    from { scale: 0 1; transform-origin: left center; }
+    to   { scale: 1 1; transform-origin: left center; }
+  }
+
+  @keyframes ts-image-reveal {
+    from { clip-path: inset(7% 7% 7% 7% round 28px); }
+    to   { clip-path: inset(0 0 0 0 round 28px); }
+  }
+
+  @keyframes ts-image-zoom {
+    from { scale: 1.18; }
+    to   { scale: 1; }
+  }
+
+  @keyframes ts-drift {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: -60px 40px; }
+  }
+
+  @keyframes ts-progress {
+    from { scale: 0 1; }
+    to   { scale: 1 1; }
+  }
+
+  @keyframes ts-shine {
+    from { translate: -130% 0; }
+    to   { translate: 230% 0; }
+  }
+
+
+  /* ==========================================================================
+     25. PAGE-LOAD SEQUENCE
+     ========================================================================== */
+
+  /* Header slides in first */
+  .ts-site-header {
+    animation: ts-drop 0.8s var(--ts-ease-out) backwards;
+  }
+
+  .ts-brand {
+    animation: ts-fade 0.9s var(--ts-ease-out) 0.15s backwards;
+  }
+
+  .ts-desktop-nav .ts-nav-item {
+    animation: ts-drop 0.7s var(--ts-ease-out) backwards;
+  }
+  .ts-desktop-nav .ts-nav-item:nth-child(1) { animation-delay: 0.20s; }
+  .ts-desktop-nav .ts-nav-item:nth-child(2) { animation-delay: 0.26s; }
+  .ts-desktop-nav .ts-nav-item:nth-child(3) { animation-delay: 0.32s; }
+  .ts-desktop-nav .ts-nav-item:nth-child(4) { animation-delay: 0.38s; }
+  .ts-desktop-nav .ts-nav-item:nth-child(5) { animation-delay: 0.44s; }
+  .ts-desktop-nav .ts-nav-item:nth-child(6) { animation-delay: 0.50s; }
+  .ts-desktop-nav .ts-nav-item:nth-child(7) { animation-delay: 0.56s; }
+
+  .ts-nav-actions {
+    animation: ts-drop 0.8s var(--ts-ease-out) 0.55s backwards;
+  }
+
+  /* Hero copy: staggered rise */
+  .ts-hero .ts-eyebrow {
+    animation: ts-rise-sm 0.8s var(--ts-ease-out) 0.25s backwards;
+  }
+
+  .ts-hero .ts-eyebrow-line {
+    animation: ts-line-grow 0.9s var(--ts-ease-out) 0.45s backwards;
+  }
+
+  .ts-hero .ts-display {
+    animation: ts-rise 1.1s var(--ts-ease-out) 0.4s backwards;
+  }
+
+  /* The muted second line arrives a beat later */
+  .ts-hero .ts-display span {
+    animation: ts-rise 1.1s var(--ts-ease-out) 0.75s backwards;
+  }
+
+  .ts-hero-description {
+    animation: ts-rise 1s var(--ts-ease-out) 0.75s backwards;
+  }
+
+  .ts-hero-actions {
+    animation: ts-rise 1s var(--ts-ease-out) 0.95s backwards;
+  }
+
+  .ts-hero-meta {
+    animation: ts-rise-sm 1s var(--ts-ease-out) 1.15s backwards;
+  }
+
+  .ts-hero-meta span {
+    animation: ts-rise-sm 0.8s var(--ts-ease-out) backwards;
+  }
+  .ts-hero-meta span:nth-child(1) { animation-delay: 1.25s; }
+  .ts-hero-meta span:nth-child(2) { animation-delay: 1.35s; }
+  .ts-hero-meta span:nth-child(3) { animation-delay: 1.45s; }
+  .ts-hero-meta span:nth-child(4) { animation-delay: 1.55s; }
+
+  /* Hero 3D image swings in from the right */
+  .ts-hero-visual {
+    animation: ts-hero-visual-in 1.5s var(--ts-ease-soft) 0.5s backwards;
+  }
+
+  .ts-hero-visual-glow {
+    animation:
+      ts-fade 2s ease 0.6s backwards,
+      ts-hero-glow 8s ease-in-out 2.6s infinite;
+  }
+
+  /* Floating tags pop in one after another, then keep floating */
+  .ts-hero-visual .ts-hero-tag {
+    animation-name: ts-tag-float, ts-pop;
+    animation-duration: 6s, 0.9s;
+    animation-timing-function: ease-in-out, var(--ts-ease-out);
+    animation-iteration-count: infinite, 1;
+    animation-delay: var(--f, 0s), var(--d, 1.4s);
+    animation-fill-mode: none, backwards;
+  }
+
+  .ts-hero-visual .ts-hero-tag-complete    { --f: 0s;     --d: 1.5s; }
+  .ts-hero-visual .ts-hero-tag-approved    { --f: -1.5s;  --d: 1.7s; }
+  .ts-hero-visual .ts-hero-tag-cloud       { --f: -3s;    --d: 1.9s; }
+  .ts-hero-visual .ts-hero-tag-operational { --f: -4.5s;  --d: 2.1s; }
+
+  /* Big soft light behind the hero slowly drifts */
+  .ts-hero-atmosphere {
+    animation: ts-drift 18s ease-in-out infinite;
+  }
+
+
+  /* ==========================================================================
+     26. SCROLL REVEALS — pure CSS (Chrome, Edge, Safari 26+)
+     ========================================================================== */
+
+  @supports (animation-timeline: view()) {
+
+    /* --- Text & headers: rise + de-blur ---------------------------------- */
+    .ts-section-label,
+    .ts-approach-header > *,
+    .ts-ecosystem-heading > *,
+    .ts-process-header > *,
+    .ts-section-heading > *,
+    .ts-stack-header > *,
+    .ts-testimonials-header > *,
+    .ts-global-technology-header > *,
+    .ts-editorial-main > *,
+    .ts-introduction-copy .ts-editorial-columns p,
+    .ts-wide-image-content > *,
+    .ts-ecosystem-intro,
+    .ts-why-intro,
+    .ts-stack-footer,
+    .ts-ecosystem-bottom > div {
+      animation: ts-rise linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+
+    /* Second paragraph / second column lags behind the first */
+    .ts-introduction-copy .ts-editorial-columns p:nth-child(2),
+    .ts-ecosystem-bottom > div:nth-child(2) {
+      animation-range: entry 10% entry 65%;
+    }
+    .ts-ecosystem-bottom > div:nth-child(3) {
+      animation-range: entry 20% entry 75%;
+    }
+
+    /* --- Cards & rows: rise, staggered by column ------------------------- */
+    .ts-ecosystem-card,
+    .ts-testimonial-card,
+    .ts-why-item,
+    .ts-approach-item {
+      animation: ts-rise-sm linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+
+    .ts-ecosystem-card:nth-child(even),
+    .ts-testimonial-card:nth-child(even) {
+      animation-range: entry 12% entry 72%;
+    }
+
+    /* Process stages: fade only (they sit in a clipped, gap-divided grid) */
+    .ts-process-stage {
+      animation: ts-fade linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    .ts-process-stage:nth-child(2) { animation-range: entry 8% entry 78%; }
+    .ts-process-stage:nth-child(3) { animation-range: entry 16% entry 86%; }
+    .ts-process-stage:nth-child(4) { animation-range: entry 24% entry 94%; }
+
+    /* --- Big panels: scale up into place --------------------------------- */
+    .ts-capability-panel,
+    .ts-global-technology-shell,
+    .ts-wide-image-card {
+      animation: ts-scale-in linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+
+    /* --- Photos: curtain-open reveal + slow zoom ------------------------- */
+    .ts-introduction-image,
+    .ts-wide-image-media {
+      animation: ts-image-reveal linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+
+    .ts-introduction-image img,
+    .ts-wide-image-media img {
+      animation: ts-image-zoom linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+    }
+
+    /* --- Tech marquee cards fade in as the strip arrives ----------------- */
+    .ts-tech-marquee {
+      animation: ts-fade linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+  }
+
+
+  /* ==========================================================================
+     27. SCROLL REVEAL FALLBACK  (browsers without animation-timeline)
+     Works together with reveal-fallback.js, which adds .ts-js-reveal to <html>
+     and .ts-reveal / .is-visible to the elements. Skipped entirely if the
+     browser supports scroll-driven animations.
+     ========================================================================== */
+
+  @supports not (animation-timeline: view()) {
+
+    .ts-js-reveal .ts-reveal {
+      opacity: 0;
+      translate: 0 34px;
+      filter: blur(6px);
+      transition:
+        opacity 0.9s var(--ts-ease-out),
+        translate 0.9s var(--ts-ease-out),
+        filter 0.9s var(--ts-ease-out);
+      transition-delay: var(--reveal-delay, 0s);
+    }
+
+    .ts-js-reveal .ts-reveal.is-visible {
+      opacity: 1;
+      translate: 0 0;
+      filter: blur(0);
+    }
+  }
+
+
+  /* ==========================================================================
+     28. POLISH
+     ========================================================================== */
+
+  /* Thin reading-progress bar across the very top of the page */
+  @supports (animation-timeline: scroll()) {
+    html::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1200;
+      height: 3px;
+      pointer-events: none;
+
+      background: linear-gradient(90deg, var(--ts-blue), var(--ts-blue-bright));
+      transform-origin: left center;
+
+      animation: ts-progress linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+
+  /* Primary buttons: light sweep on hover */
+  .ts-button-primary,
+  .ts-nav-contact {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .ts-button-primary::after,
+  .ts-nav-contact::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    z-index: -1;
+    width: 45%;
+    pointer-events: none;
+
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, 0.28),
+      transparent
+    );
+    translate: -130% 0;
+  }
+
+  .ts-button-primary:hover::after,
+  .ts-nav-contact:hover::after {
+    animation: ts-shine 0.9s var(--ts-ease-out);
+  }
+
+  /* Cards: a soft blue glow on hover, layered on your existing lift */
+  .ts-ecosystem-card,
+  .ts-testimonial-card {
+    transition:
+      transform 0.4s var(--ts-ease-out),
+      background 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.4s ease;
+  }
+
+  .ts-ecosystem-card:hover,
+  .ts-testimonial-card:hover {
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, 0.22),
+      0 0 0 1px rgba(96, 165, 250, 0.12),
+      0 18px 50px rgba(37, 99, 235, 0.1);
+  }
+
+  /* Ecosystem icons nudge on card hover */
+  .ts-ecosystem-card-top svg {
+    transition: transform 0.4s var(--ts-ease-out);
+  }
+  .ts-ecosystem-card:hover .ts-ecosystem-card-top svg {
+    transform: translate(3px, -3px) scale(1.1);
+  }
+
+  /* Why-list rows slide slightly on hover */
+  .ts-why-item {
+    transition: padding-left 0.35s var(--ts-ease-out), background 0.35s ease;
+  }
+  .ts-why-item:hover {
+    padding-left: 12px;
+    background: linear-gradient(90deg, var(--ts-surface), transparent 70%);
+  }
+
+  /* Process arrow follows the hover */
+  .ts-process-arrow {
+    transition: transform 0.35s var(--ts-ease-out), border-color 0.35s ease, color 0.35s ease;
+  }
+  .ts-process-stage:hover .ts-process-arrow {
+    transform: translateX(4px);
+  }
+}
+
+/* ============================================================
+   CAPABILITY SERVICES CONTAINER
+   (replaces the old centred icon card on the left visual)
+   Paste at the end of your stylesheet.
+   ============================================================ */
+
+.ts-capability-services {
+  position: absolute;
+  top: 84px;
+  left: 28px;
+  right: 28px;
+  z-index: 5;
+
+  max-width: 470px;
+  padding: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+
+  background: rgba(8, 12, 20, 0.58);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  animation: tsServicesIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes tsServicesIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ts-capability-services-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 0 4px 14px;
+  margin-bottom: 12px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ts-capability-services-head span:last-child {
+  color: var(--ts-blue-bright);
+}
+
+.ts-capability-services-list {
+  display: grid;
+  gap: 7px;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ts-capability-service {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding: 12px 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.045);
+
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.8rem;
+  line-height: 1.35;
+
+  animation: tsServicesIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.ts-capability-service:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(96, 165, 250, 0.35);
+  transform: translateX(4px);
+}
+
+.ts-capability-service-number {
+  flex: 0 0 auto;
+  min-width: 26px;
+
+  color: var(--ts-blue-bright);
+  font-family: var(--ts-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+/* Give the taller visual room so the container never touches the title */
+.ts-capability-visual {
+  min-height: 620px;
+}
+
+@media (max-width: 900px) {
+  .ts-capability-services {
+    top: 72px;
+    left: 20px;
+    right: 20px;
+  }
+
+  .ts-capability-visual {
+    min-height: 560px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ts-capability-services {
+    top: 62px;
+    left: 16px;
+    right: 16px;
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .ts-capability-service {
+    padding: 10px 12px;
+    font-size: 0.74rem;
+  }
+
+  .ts-capability-visual {
+    min-height: 540px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ts-capability-services,
+  .ts-capability-service {
+    animation: none;
+  }
+}
+
+/* ============================================================================
+   MANAGED SERVICES — HERO SHOWCASE (right side of the banner)
+   Paste at the END of your stylesheet.
+   Uses your existing tokens (--ts-*), so dark/light themes just work.
+   ============================================================================ */
+
+/* Frame ------------------------------------------------------------------- */
+
+.ts-ms-showcase {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  padding: 14px;
+
+  border: 1px solid var(--ts-border-strong);
+  border-radius: 32px;
+
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--ts-bg-elevated) 94%, transparent),
+      color-mix(in srgb, var(--ts-bg-soft) 96%, transparent)
+    );
+
+  box-shadow:
+    var(--ts-shadow-lg),
+    var(--ts-shadow-blue),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Glowing top edge */
+.ts-ms-showcase::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  z-index: 3;
+  height: 1px;
+  pointer-events: none;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ts-blue-bright) 75%, transparent),
+    transparent
+  );
+}
+
+/* Faint technical grid, fading out downwards */
+.ts-ms-showcase::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+
+  background-image:
+    linear-gradient(var(--ts-border-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ts-border-soft) 1px, transparent 1px);
+  background-size: 44px 44px;
+
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+/* Optional photo behind everything */
+.ts-ms-showcase-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.16;
+
+  mask-image: linear-gradient(135deg, black, transparent 70%);
+  -webkit-mask-image: linear-gradient(135deg, black, transparent 70%);
+}
+
+/* Colour glows */
+.ts-ms-showcase-glow {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(40px);
+}
+
+.ts-ms-showcase-glow-one {
+  top: -120px;
+  right: -100px;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.28), transparent 70%);
+}
+
+.ts-ms-showcase-glow-two {
+  bottom: -140px;
+  left: -100px;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.12), transparent 70%);
+}
+
+/* Grid -------------------------------------------------------------------- */
+
+.ts-ms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* Card -------------------------------------------------------------------- */
+
+.ts-ms-card {
+  --mx: 50%;
+  --my: 0%;
+
+  position: relative;
+  overflow: hidden;
+
+  min-height: 178px;
+  padding: 18px 18px 16px;
+
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid var(--ts-border);
+  border-radius: 20px;
+  background: var(--ts-surface);
+
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    background 0.3s ease,
+    box-shadow 0.4s ease;
+}
+
+/* Cursor-follow spotlight */
+.ts-ms-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+
+  background: radial-gradient(
+    220px circle at var(--mx) var(--my),
+    rgba(96, 165, 250, 0.16),
+    transparent 65%
+  );
+
+  transition: opacity 0.3s ease;
+}
+
+.ts-ms-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.ts-ms-card:hover,
+.ts-ms-card:focus-within {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--ts-blue) 38%, var(--ts-border));
+  background: var(--ts-surface-hover);
+
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.22),
+    0 14px 40px rgba(37, 99, 235, 0.1);
+}
+
+.ts-ms-card:hover::before,
+.ts-ms-card:focus-within::before {
+  opacity: 1;
+}
+
+/* Top row: icon + index */
+.ts-ms-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.ts-ms-card-icon {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid color-mix(in srgb, var(--ts-blue) 22%, var(--ts-border));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--ts-blue) 9%, transparent);
+  color: var(--ts-blue-bright);
+
+  transition:
+    transform 0.35s ease,
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.ts-ms-card:hover .ts-ms-card-icon {
+  transform: translateY(-2px) rotate(-4deg);
+  border-color: color-mix(in srgb, var(--ts-blue) 45%, var(--ts-border));
+  background: color-mix(in srgb, var(--ts-blue) 16%, transparent);
+}
+
+.ts-ms-card-index {
+  color: var(--ts-text-subtle);
+  font-family: var(--ts-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+}
+
+/* Title + divider + text */
+.ts-ms-card-title {
+  margin: 0;
+
+  color: var(--ts-text);
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+/* Divider that fills with blue on hover */
+.ts-ms-divider {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin: 12px 0;
+  background: var(--ts-border);
+}
+
+.ts-ms-divider::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    var(--ts-blue),
+    var(--ts-blue-bright),
+    transparent
+  );
+
+  transform: scaleX(0.18);
+  transform-origin: left center;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ts-ms-card:hover .ts-ms-divider::after,
+.ts-ms-card:focus-within .ts-ms-divider::after {
+  transform: scaleX(1);
+}
+
+.ts-ms-card-text {
+  margin: 0;
+
+  color: var(--ts-text-muted);
+  font-size: 0.76rem;
+  line-height: 1.65;
+}
+
+/* Learn more — stretched link makes the whole card clickable */
+.ts-ms-card-link {
+  margin-top: auto;
+  padding-top: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+
+  color: var(--ts-text);
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  transition: color 0.25s ease, gap 0.25s ease;
+}
+
+.ts-ms-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.ts-ms-card-link svg {
+  color: var(--ts-blue-bright);
+  transition: transform 0.25s ease;
+}
+
+.ts-ms-card:hover .ts-ms-card-link {
+  gap: 9px;
+  color: var(--ts-blue-bright);
+}
+
+.ts-ms-card:hover .ts-ms-card-link svg {
+  transform: translate(2px, -2px);
+}
+
+.ts-ms-card-link:focus-visible {
+  outline: 2px solid var(--ts-blue-bright);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* Left-hand headline: keep it readable on one or two lines */
+.ts-ms-hero .ts-display {
+  max-width: 11ch;
+}
+
+/* Light theme ------------------------------------------------------------- */
+
+html[data-theme="light"] .ts-ms-card:hover,
+html[data-theme="light"] .ts-ms-card:focus-within {
+  box-shadow:
+    0 22px 50px rgba(15, 23, 42, 0.12),
+    0 14px 40px rgba(37, 99, 235, 0.1);
+}
+
+/* Entrance animation (skipped for reduced-motion users) ------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  @keyframes ts-ms-frame-in {
+    from { opacity: 0; translate: 48px 24px; scale: 0.96; filter: blur(8px); }
+    to   { opacity: 1; translate: 0 0;       scale: 1;    filter: blur(0); }
+  }
+
+  @keyframes ts-ms-card-in {
+    from { opacity: 0; translate: 0 26px; }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  .ts-ms-showcase {
+    animation: ts-ms-frame-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.35s backwards;
+  }
+
+  /* Cards cascade in one after another */
+  .ts-ms-card {
+    animation:
+      ts-ms-card-in 0.8s cubic-bezier(0.22, 1, 0.36, 1)
+      calc(0.75s + var(--i, 0) * 0.08s) backwards;
+  }
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .ts-ms-hero .ts-display { max-width: 14ch; }
+}
+
+@media (max-width: 640px) {
+  .ts-ms-showcase {
+    padding: 10px;
+    border-radius: 24px;
+  }
+
+  .ts-ms-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ts-ms-card {
+    min-height: 0;
+    border-radius: 18px;
+  }
 }
