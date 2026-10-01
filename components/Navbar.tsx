@@ -101,32 +101,15 @@ export default function Navbar() {
 
             <li className="ts-nav-item">
 
-              <button
-                type="button"
+              <a
+                href="/professional-services"
                 className="ts-nav-link"
-                data-menu-trigger="professional-services-menu"
-                aria-expanded="false"
-                aria-haspopup="true"
-                aria-controls="professional-services-menu"
+                aria-label="Professional Services"
               >
                 <span>
                   Professional Services
                 </span>
-
-                <i
-                  data-lucide="chevron-down"
-                  data-menu-chevron
-                  aria-hidden="true"
-                />
-              </button>
-
-              <div
-                id="professional-services-menu"
-                className="ts-mega-menu"
-                role="region"
-                aria-label="Professional Services menu"
-                data-menu="professional-services-menu"
-              />
+              </a>
 
             </li>
 
