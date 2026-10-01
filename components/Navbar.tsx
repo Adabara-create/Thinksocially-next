@@ -3,7 +3,10 @@ export default function Navbar() {
     <header id="site-header" className="ts-site-header">
       <div className="ts-nav-shell">
 
-        {/* Brand */}
+        {/* =====================================================
+            BRAND
+            ===================================================== */}
+
         <a
           href="/"
           className="ts-brand"
@@ -18,7 +21,10 @@ export default function Navbar() {
           </span>
         </a>
 
-        {/* Desktop Navigation */}
+        {/* =====================================================
+            DESKTOP NAVIGATION
+            ===================================================== */}
+
         <nav
           className="ts-desktop-nav"
           aria-label="Primary navigation"
@@ -28,6 +34,7 @@ export default function Navbar() {
             {/* =================================================
                 MANAGED SERVICES
                 ================================================= */}
+
             <li className="ts-nav-item">
 
               <a
@@ -59,15 +66,13 @@ export default function Navbar() {
             {/* =================================================
                 CLOUD COMPUTING
                 ================================================= */}
+
             <li className="ts-nav-item">
 
-              <button
-                type="button"
+              <a
+                href="/cloud-computing"
                 className="ts-nav-link"
-                data-menu-trigger="cloud-computing-menu"
-                aria-expanded="false"
-                aria-haspopup="true"
-                aria-controls="cloud-computing-menu"
+                aria-label="Cloud Computing"
               >
                 <span>
                   Cloud Computing
@@ -78,7 +83,7 @@ export default function Navbar() {
                   data-menu-chevron
                   aria-hidden="true"
                 />
-              </button>
+              </a>
 
               <div
                 id="cloud-computing-menu"
@@ -93,6 +98,7 @@ export default function Navbar() {
             {/* =================================================
                 PROFESSIONAL SERVICES
                 ================================================= */}
+
             <li className="ts-nav-item">
 
               <button
@@ -127,6 +133,7 @@ export default function Navbar() {
             {/* =================================================
                 CYBERSECURITY
                 ================================================= */}
+
             <li className="ts-nav-item">
 
               <button
@@ -161,6 +168,7 @@ export default function Navbar() {
             {/* =================================================
                 ABOUT
                 ================================================= */}
+
             <li>
               <a
                 href="/about"
@@ -173,6 +181,7 @@ export default function Navbar() {
             {/* =================================================
                 SUPPORT
                 ================================================= */}
+
             <li>
               <a
                 href="/support"
@@ -188,6 +197,7 @@ export default function Navbar() {
         {/* =====================================================
             DESKTOP ACTIONS
             ===================================================== */}
+
         <div className="ts-nav-actions">
 
           <a
@@ -223,6 +233,7 @@ export default function Navbar() {
         {/* =====================================================
             MOBILE NAVIGATION TOGGLE
             ===================================================== */}
+
         <button
           id="nav-mobile-toggle"
           type="button"
