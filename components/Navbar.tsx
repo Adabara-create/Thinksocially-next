@@ -12,13 +12,11 @@ export default function Navbar() {
           className="ts-brand"
           aria-label="ThinkSocially home"
         >
-          <span className="ts-brand-mark">
-            TS
-          </span>
-
-          <span className="ts-brand-wordmark">
-            THINKSOCIALLY
-          </span>
+          <img
+            src="/images/hero/ts.png"
+            alt="ThinkSocially"
+            className="ts-brand-logo"
+          />
         </a>
 
         {/* =====================================================
@@ -51,6 +49,7 @@ export default function Navbar() {
                   data-menu-chevron
                   aria-hidden="true"
                 />
+
               </a>
 
               <div
@@ -83,6 +82,7 @@ export default function Navbar() {
                   data-menu-chevron
                   aria-hidden="true"
                 />
+
               </a>
 
               <div
@@ -119,32 +119,15 @@ export default function Navbar() {
 
             <li className="ts-nav-item">
 
-              <button
-                type="button"
+              <a
+                href="/cybersecurity"
                 className="ts-nav-link"
-                data-menu-trigger="cybersecurity-menu"
-                aria-expanded="false"
-                aria-haspopup="true"
-                aria-controls="cybersecurity-menu"
+                aria-label="Cybersecurity"
               >
                 <span>
                   Cybersecurity
                 </span>
-
-                <i
-                  data-lucide="chevron-down"
-                  data-menu-chevron
-                  aria-hidden="true"
-                />
-              </button>
-
-              <div
-                id="cybersecurity-menu"
-                className="ts-mega-menu"
-                role="region"
-                aria-label="Cybersecurity menu"
-                data-menu="cybersecurity-menu"
-              />
+              </a>
 
             </li>
 
@@ -170,7 +153,7 @@ export default function Navbar() {
                 href="/support"
                 className="ts-nav-link ts-nav-direct"
               >
-                Support
+                Contact Us
               </a>
             </li>
 
@@ -195,20 +178,6 @@ export default function Navbar() {
             <span>
               Desktop Support
             </span>
-          </a>
-
-          <a
-            href="/contact"
-            className="ts-nav-contact"
-          >
-            <span>
-              Contact Us
-            </span>
-
-            <i
-              data-lucide="arrow-up-right"
-              aria-hidden="true"
-            />
           </a>
 
         </div>
